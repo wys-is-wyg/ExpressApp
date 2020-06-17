@@ -1,1 +1,21 @@
 /* Forms */
+input[type="email"],
+input[type="password"] {
+    background: #272e3b;
+    border-radius: 30px;
+    height: 60px;
+    padding: 15px;
+    border: none;
+    color: #fff;
+    -webkit-box-shadow: inset 0px 3px 1px rgba(0, 0, 0, 0.1);
+    box-shadow: inset 0px 3px 1px rgba(0, 0, 0, 0.1);
+}
+.btn-primary{
+    background: #4D5F8A;
+    border-radius: 30px;
+    padding: 15px 30px;
+    border: none;
+    &:hover{
+        background: #06bc72;
+    }
+}
