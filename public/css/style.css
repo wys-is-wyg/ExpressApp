@@ -36,6 +36,16 @@
   cursor: pointer;
 }
 
+.grow {
+  -webkit-transition: all .3s ease-in-out;
+  transition: all .3s ease-in-out;
+}
+
+.grow:hover {
+  -webkit-transform: scale(1.1);
+          transform: scale(1.1);
+}
+
 /* Forms */
 input[type="email"],
 input[type="password"] {
@@ -50,7 +60,7 @@ input[type="password"] {
 }
 
 .btn-primary {
-  background: #4D5F8A;
+  background: #718BC9;
   border-radius: 30px;
   padding: 15px 30px;
   border: none;
@@ -62,7 +72,7 @@ input[type="password"] {
 
 .modal-dialog {
   min-width: 50vw;
-  margin: 1.75rem auto;
+  margin: 3rem auto;
 }
 
 .modal-content {
@@ -78,11 +88,32 @@ input[type="password"] {
 
 .modal-content .nav-tabs {
   width: 100%;
+  border: none;
 }
 
 .modal-content .nav-tabs .nav-link {
-  border-top-left-radius: 15px;
-  border-top-right-radius: 15px;
+  border-radius: 30px;
+  padding: 1rem 2rem;
+  border: 1px solid #718BC9;
+}
+
+.modal-content .nav-tabs .nav-link.active {
+  background-color: #718BC9;
+  color: #fff;
+}
+
+.modal-content .nav-tabs .nav-link.login {
+  border-top-left-radius: 30px;
+  border-top-right-radius: 0;
+  border-bottom-left-radius: 30px;
+  border-bottom-right-radius: 0;
+}
+
+.modal-content .nav-tabs .nav-link.register {
+  border-top-left-radius: 0;
+  border-top-right-radius: 30px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 30px;
 }
 
 .modal-content .submit {
@@ -126,12 +157,18 @@ input[type="password"] {
 #navbar a.nav-link {
   margin-left: 1rem;
   padding: 0.5rem;
+  -webkit-transition: color 0.3s ease;
+  transition: color 0.3s ease;
 }
 
 #navbar a.nav-link i {
   display: block;
   font-size: 1.4rem;
   margin: 5px;
+}
+
+#navbar a.nav-link:hover {
+  color: #718BC9;
 }
 
 #navbar .dropdown-menu {
