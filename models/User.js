@@ -1,8 +1,8 @@
 
 class User{
 
-    constructor(){
-        this.user = false;
+    constructor(firebaseUser = false){
+        this.user = firebaseUser;
         this.get_user();
     }
 
@@ -44,4 +44,4 @@ class User{
         });
     }
 }
-        
+module.exports = User;
