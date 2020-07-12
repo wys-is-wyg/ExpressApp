@@ -1,8 +1,13 @@
 class Socket{
 
     constructor(io){
+        if (typeof this.instance === 'object') {
+            return this.instance;
+        }
         this.io = io;
         this.openSocket();
+        this.instance = this;
+        return this;
     }
 
     openSocket(){

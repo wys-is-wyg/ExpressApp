@@ -2,29 +2,32 @@ var express = require('express');
 var session = require('express-session');
 var path = require('path');
 
-var app = express();
-app.use(session({
-  secret: 'ashubbery',
+GulpApp = express();
+GulpApp.use(session({
+  secret: 'aUniqueAndSecretString',
   resave: false,
   saveUninitialized: false,
   cookie: { secure: false }
 }))
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
+GulpApp.set('views', path.join(__dirname, 'views'));
+GulpApp.set('view engine', 'ejs');
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, 'public')));
+GulpApp.use(express.json());
+GulpApp.use(express.urlencoded({ extended: false }));
+GulpApp.use(express.static(path.join(__dirname, 'public')));
 
 var Database = require('./classes/Database'); 
-database = new Database(); 
+GulpDatabase = new Database(); 
+var Validator = require('./classes/Validator');
+GulpValidator = new Validator();
 var Router = require('./classes/Router');
-var router = new Router(app);
+GulpRouter = new Router();
+
 /*
-var http = require('http').Server(app);
+var http = require('http').Server(GulpApp);
 var io = require('socket.io')(http);
 var Socket = require('./classes/Socket');
-var socket = new Socket(io);
+GulpSocket = new Socket(io);
 */
-module.exports = app;
+module.exports = GulpApp;
