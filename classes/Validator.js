@@ -1,63 +1,68 @@
 class Validator{
 
-    isUserAuthorized(request, response, next) {
-        if (!request.session.token) {
-            response.redirect('/');
-        } else {
-            next();
-        }
-    }
-
     loginValid(data) {
-        let errors = {};
+        let errors = [];
 
-        if (this.isEmpty(data.email)) errors.email = 'Must not be empty';
-        if (this.isEmpty(data.password)) errors.password = 'Must not be empty';
+        if (this.isEmpty(data.email)) errors.push('You need to add an email');
+        if (this.isEmpty(data.password)) {
+            errors.push('You need to include a password');
+        } else if (data.password.length < 6) {
+            errors.push('Your password must be at least 6 characters in length');
+        }
     
         return {
             errors,
-            valid: Object.keys(errors).length === 0 ? true : false
+            valid: errors.length === 0 ? true : false
         };
     }
 
     registerValid(data) {
-        let errors = {};
-
-        if (this.isEmpty(data.email)) {
-            errors.email = 'Must not be empty';
-        } else if (!this.isEmail(data.email)) {
-            errors.email = 'Must be valid email address';
+        let errors = [];
+        if (this.isEmpty(data.email)) errors.push('You need to add an email');
+        if (this.isEmpty(data.password)) {
+            errors.push('You need to include a password');
+        } else if (data.password.length < 6) {
+            errors.push('Your password must be at least 6 characters in length');
+        } 
+        if (data.password !== data.passwordConfirm) {
+            errors.push('Your passwords must both match');
         }
-
-        if (this.isEmpty(data.password)) errors.password = 'Must not be empty';
-        if (data.password !== data.confirmPassword) errors.confirmPassword = 'Passwords must be the same';
-    
         return {
             errors,
-            valid: Object.keys(errors).length === 0 ? true : false
+            valid: errors.length === 0 ? true : false
         };
 
     }
 
-    userUpdateValid(data) {
-        let errors = {};
+    updateUserValid(data) {
+        let errors = [];
 
-        if (this.isEmpty(data.email)) {
-            errors.email = 'Must not be empty';
-        } else if (!this.isEmail(data.email)) {
-            errors.email = 'Must be valid email address';
-        }
-    
-        if (this.isEmpty(data.firstName)) errors.firstName = 'Must not be empty';
-        if (this.isEmpty(data.lastName)) errors.lastName = 'Must not be empty';
-    
-        if (this.isEmpty(data.password)) errors.password = 'Must not be empty';
-        if (data.password !== data.confirmPassword) errors.confirmPassword = 'Passwords must be the same';
-        if (this.isEmpty(data.username)) errors.username = 'Must not be empty';
+        if (this.isEmpty(data.email)) errors.push('You need to add an email');
+        if (this.isEmpty(data.displayName)) errors.push('You need to include a display name');
     
         return {
             errors,
-            valid: Object.keys(errors).length === 0 ? true : false
+            valid: errors.length === 0 ? true : false
+        };
+
+    }
+
+    updatePasswordValid(data) {
+        let errors = [];
+
+        if (this.isEmpty(data.password)) {
+            errors.push('You need to include a password');
+        }
+        if (data.password.length < 6) {
+            errors.push('Your password must be at least 6 characters in length');
+        } 
+        if (data.password !== data.confirmPassword) {
+            errors.push('Your passwords must both match');
+        }
+    
+        return {
+            errors,
+            valid: errors.length === 0 ? true : false
         };
 
     }

@@ -1,6 +1,7 @@
 var express = require('express');
 var session = require('express-session');
 var path = require('path');
+var logger = require('morgan');
 
 GulpApp = express();
 GulpApp.use(session({
@@ -13,6 +14,7 @@ GulpApp.use(session({
 GulpApp.set('views', path.join(__dirname, 'views'));
 GulpApp.set('view engine', 'ejs');
 
+GulpApp.use(logger('dev'));
 GulpApp.use(express.json());
 GulpApp.use(express.urlencoded({ extended: false }));
 GulpApp.use(express.static(path.join(__dirname, 'public')));

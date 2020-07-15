@@ -1,7 +1,6 @@
 /* Forms */
-input[type="email"],
-input[type="password"] {
-    background: $medium;
+.formInputStyle{
+    background-color: $medium !important;
     border-radius: 30px;
     height: 60px;
     padding: 15px;
@@ -9,6 +8,16 @@ input[type="password"] {
     color: #fff;
     -webkit-box-shadow: inset 0px 3px 1px rgba(0, 0, 0, 0.1);
     box-shadow: inset 0px 3px 1px rgba(0, 0, 0, 0.1);
+}
+.form-group{
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+        &:focus{
+            @extend .formInputStyle;
+        }
+        @extend .formInputStyle;
+    }
 }
 .btn-primary{
     background: $lightest;

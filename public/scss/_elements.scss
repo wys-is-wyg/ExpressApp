@@ -33,3 +33,17 @@
 .grow:hover { 
     transform: scale(1.1); 
 }
+.alert-primary {
+    color: #fff;
+    background-color: $mediumlight;
+    border: none;
+    border-radius: 30px;
+    padding: 15px 30px;
+}
+.errors{
+    margin-top: 2rem;
+}
+hr{
+    margin-bottom: 2rem;
+    border-top: 1px solid $lightest;
+}

@@ -1,11 +1,58 @@
 <%- include('partials/header'); %> 
+<% var userName = (locals.user.displayName) ? locals.displayName : '' %>
+<% var userEmail = (locals.user.email) ? locals.userEmail : '' %>
+<% var profileErrors = ("profile" in  locals.userErrors) ? locals.userErrors.profile : false %>
+<% var passwordErrors = ("password" in  locals.userErrors) ? locals.userErrors.password : false %>
+
 			<div id="main">
 				<div class="container-fluid">
 				<div class="row">
 					<div id="sidebar" class="col-md-3">
 					</div>  
 					<main role="main" class="col-md-9">
-						<h1>Gulp - Your Account</h1>
+						<h1>Your Account</h1>
+						<hr>
+						<h2>Your Profile</h2>
+						<hr>
+						<form action="/account" method="post">
+							<div class="form-group">
+								<label class="control-label">Display Name</label>
+								<input id="update-display-name" type="text" class="form-control" name="displayName" placeholder="Display Name" value="<%= userName %>">
+							</div>
+							<div class="form-group">
+								<label class="control-label">Email Address</label>
+								<input id="update-email" type="email" class="form-control" name="email" placeholder="Email" value="<%= userEmail %>">
+							</div>
+							<div class="form-group submit">
+								<button id="update" type="submit" class="btn btn-primary">Update</button>
+							</div>
+							<% if (profileErrors) { %>
+								<% profileErrors.forEach(function(error) { %>
+									<p><div class="alert alert-primary" role="alert"><%= error %></div></p>
+								<% }) %>
+							<% } %>
+						</form> <!-- end account form -->
+						<p>&nbsp;</p>
+						<h2>Your Password</h2>
+						<hr>
+						<form action="/password" method="post">
+							<div class="form-group">
+								<label class="control-label">Password</label>
+								<input id="update-password" type="password" class="form-control" name="password" placeholder="Password">
+							</div>
+							<div class="form-group">
+								<label class="control-label">Password Confirmation</label>
+								<input type="password" class="form-control" name="passwordConfirm" placeholder="Password Confirmation">
+							</div>
+							<div class="form-group submit">
+								<button id="update" type="submit" class="btn btn-primary">Change Your Password</button>
+							</div>
+							<% if (passwordErrors) { %>
+								<% passwordErrors.forEach(function(error) { %>
+									<p><div class="alert alert-primary" role="alert"><%= error %></div></p>
+								<% }) %>
+							<% } %>
+						</form> <!-- end register form -->
 					</main>
 				</div> <!-- end .row --> 
 				</div><!-- end .container-fluid -->

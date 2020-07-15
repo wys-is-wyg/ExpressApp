@@ -7,13 +7,13 @@
         <script src="https://kit.fontawesome.com/2ea5bc6e34.js" crossorigin="anonymous"></script>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
         <link href="https://fonts.googleapis.com/css?family=Open+Sans|Open+Sans+Condensed:300,700&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="css/style.css">
+        <link rel="stylesheet" href="/css/style.css">
     </head>
 	<body>
     	<div id="app-container">
-			<header id="header">
-				<nav id="navbar" class="navbar navbar-expand-lg navbar-dark bg-dark">
-					<a id="brand" class="navbar-brand" href="#">Gulp</a>
+			<header id="header" class="bg-dark">
+				<nav id="navbar" class="navbar navbar-expand-lg">
+					<a id="brand" class="navbar-brand" href="/">Gulp</a>
 					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
 						<span class="navbar-toggler-icon"></span>
 					</button>
@@ -35,7 +35,7 @@
 									<a class="nav-link" href="#"><i class="fas fa-user"></i>Users</a>
 								</li>
 								<li class="nav-item">
-									<a class="nav-link" href="#"><i class="fas fa-sliders-h"></i>Settings</a>
+									<a class="nav-link" href="/account"><i class="fas fa-sliders-h"></i>Settings</a>
 								</li>
 								<li class="nav-item">
 									<a class="nav-link" href="/logout"><i class="fas fa-sign-out-alt"></i>Logout</a>
@@ -47,4 +47,15 @@
 							<% } %>
 						</ul>
 					</nav>
+					<% if (locals.genericErrors) { %>
+						<div class="container">
+							<div class="row justify-content-md-center">
+								<div class="generic-errors col-6">
+									<% locals.genericErrors.forEach(function(error) { %>
+										<p class="alert alert-primary" role="alert"><%= error %></p>
+									<% }) %>
+								</div>
+							</div>
+						</div>
+					<% } %>
 				</header>
