@@ -64,9 +64,15 @@ hr {
 }
 
 /* Forms */
-.formInputStyle, .form-group input[type="text"]:focus,
+.formInputStyle, .form-group .custom-file-label:focus,
+.form-group .custom-file-input:focus,
+.form-group input[type="file"]:focus,
+.form-group input[type="text"]:focus,
 .form-group input[type="email"]:focus,
-.form-group input[type="password"]:focus, .form-group input[type="text"],
+.form-group input[type="password"]:focus, .form-group .custom-file-label,
+.form-group .custom-file-input,
+.form-group input[type="file"],
+.form-group input[type="text"],
 .form-group input[type="email"],
 .form-group input[type="password"] {
   background-color: #272e3b !important;
@@ -77,6 +83,48 @@ hr {
   color: #fff;
   -webkit-box-shadow: inset 0px 3px 1px rgba(0, 0, 0, 0.1);
   box-shadow: inset 0px 3px 1px rgba(0, 0, 0, 0.1);
+}
+
+.form-group .custom-file-label:focus,
+.form-group .custom-file-input:focus,
+.form-group input[type="file"]:focus,
+.form-group input[type="text"]:focus,
+.form-group input[type="email"]:focus,
+.form-group input[type="password"]:focus {
+  -webkit-box-shadow: inset 0px 3px 1px rgba(0, 0, 0, 0.1);
+          box-shadow: inset 0px 3px 1px rgba(0, 0, 0, 0.1);
+}
+
+.form-group .custom-file-label {
+  line-height: 1.8;
+  padding: 15px 30px;
+}
+
+.form-group .custom-file-label::after {
+  color: #fff;
+  background-color: #283246;
+  border: none;
+  border-radius: 0;
+  height: 60px;
+  padding: 15px;
+  line-height: 1.8;
+  cursor: pointer;
+}
+
+.form-group .input-group-append button {
+  border: none;
+  height: 60px;
+  padding: 15px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 30px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 30px;
+  background-color: #718BC9;
+  color: #fff;
+}
+
+.form-group .input-group-append button:hover {
+  background: #06bc72;
 }
 
 .btn-primary {
@@ -300,6 +348,15 @@ h1, h2, h3, h4 {
 #main main {
   border-radius: 0 0 30px 0;
   padding: 3rem 2rem;
+}
+
+#avatar {
+  margin-bottom: 2rem;
+}
+
+#avatar img {
+  width: 100%;
+  height: auto;
 }
 
 #chat {

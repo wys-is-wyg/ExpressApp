@@ -8,6 +8,7 @@ class UserController{
         GulpApp.post('/password', this.updatePassword);
         GulpApp.post('/account', this.updateAccount);
         GulpApp.get('/account', this.getAccount);
+        GulpApp.post('/avatar', this.updateAvatar);
     }
 
     setVariables(){
@@ -17,9 +18,6 @@ class UserController{
             }
             if (request.session.user) {
                 response.locals.user = request.session.user;
-                response.locals.userEmail = request.session.userEmail;
-                response.locals.userId = request.session.userId;
-                response.locals.displayName = request.session.displayName;
             }
             if (request.session.userErrors) {
                 response.locals.userErrors = request.session.userErrors;
@@ -51,9 +49,6 @@ class UserController{
                     var user = GulpDatabase.firebase.auth().currentUser;
                     if (user != null) {
                         request.session.user = user;
-                        request.session.userEmail = user.email;
-                        request.session.userId = user.uid;
-                        request.session.displayName = user.displayName;
                     }
                     request.session.token = token;
                     response.locals.loggedin = true;
@@ -87,9 +82,7 @@ class UserController{
                 .then((token) => {
                     var user = GulpDatabase.firebase.auth().currentUser;
                     if (user != null) {
-                        request.session.userEmail = user.email;
-                        request.session.userId = user.uid;
-                        request.session.displayName = user.displayName;
+                        request.session.user = user;
                     }
                     request.session.token = token;
                     response.locals.loggedin = true;
@@ -124,9 +117,7 @@ class UserController{
                 }).then(function() {
                     var currentUser = GulpDatabase.firebase.auth().currentUser;
                     if (currentUser != null) {
-                        request.session.userEmail = user.email;
-                        request.session.userId = user.uid;
-                        request.session.displayName = user.displayName;
+                        request.session.user = currentUser;
                     }
                     request.session.userErrors.profile = ['Your details have been updated.'];
                     response.redirect('/account');
@@ -189,23 +180,52 @@ class UserController{
         response.render('account');
     }
     
-    upload(file){
+    updateAvatar = (request, response, next) => {
+        
+        var currentUser = GulpDatabase.firebase.auth().currentUser;
+        if (currentUser != null) {
+            if(!request.files) {
+                request.session.userErrors.avatar = ['You need to select a suitable file'];
+                response.redirect('/account');
+            } 
+            console.log(this);
+            var photoURL = this.uploadFile(request.files.avatar, currentUser);
+            currentUser.updateProfile({
+                photoURL: photoURL
+            }).then(function() {
+                var currentUser = GulpDatabase.firebase.auth().currentUser;
+                if (currentUser != null) {
+                    request.session.user = currentUser;
+                }
+                request.session.userErrors.avatar = ['Your profile image has been updated.'];
+                response.redirect('/account');
+            }).catch(function(error) {
+                request.session.userErrors.profile = [error.message];
+                response.redirect('/account');
+            });
+        } else {
+            request.session.genericErrors = ['You have been logged out due to inactivity'];
+            this.logout(request, response, next);
+        }
+
+    };
+
+    uploadFile(file, user){
         var extensions = [".png", ".jpg", ".jpeg", ".gif"];
         if (this.allowed_file(file.filename, extensions)) {
-            user = User();
-            user_id_token = user.get_user_id_token();
-            user_id = user.get_user_id();
+            var userToken = request.session.token;
             var tmp = require('tmp');
             var path = require('path');
             var ext = path.extname(file);
-            var temp = tmp.fileSync({ mode: '0644', prefix: user_id, postfix: ext });
+            var temp = tmp.fileSync({ mode: '0644', prefix: user.uid, postfix: ext });
+            console.log(temp);
+            return;
             storage = GulpDatabase.storage();
-            result = storage.child(new_name).put(temp.name, user_id_token);
-            console.log(result);
+            result = storage.child(new_name).put(temp.name, userToken);
             return result;
-
         } else {
-            console.log("Only allowed filetypes: ".join(extensions.join()));
+            request.session.userErrors.avatar = ["Only allowed filetypes: ".join(extensions.join())];
+            response.redirect('/account');
         }
     }
 

@@ -10,13 +10,47 @@
     box-shadow: inset 0px 3px 1px rgba(0, 0, 0, 0.1);
 }
 .form-group{
+    .custom-file-label,
+    .custom-file-input,
+    input[type="file"],
     input[type="text"],
     input[type="email"],
     input[type="password"] {
         &:focus{
+            box-shadow: inset 0px 3px 1px rgba(0, 0, 0, 0.1);
             @extend .formInputStyle;
         }
         @extend .formInputStyle;
+    }
+    .custom-file-label{
+        line-height: 1.8;
+        padding: 15px 30px;
+    }
+    .custom-file-label::after {
+        color: #fff;
+        background-color: $mediumlight;
+        border: none;
+        border-radius: 0;
+        height: 60px;
+        padding: 15px;
+        line-height: 1.8;
+        cursor: pointer;
+    }
+    .input-group-append{
+        button{
+            border: none;
+            height: 60px;
+            padding: 15px;
+            border-top-left-radius: 0;
+            border-top-right-radius: 30px;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 30px;
+            background-color: $lightest;
+            color: #fff;
+            &:hover{
+                background: $green;
+            }
+        }
     }
 }
 .btn-primary{
