@@ -91,7 +91,7 @@ class UserController{
                 .catch((error) => {
                     request.session.registerErrors = [error.message];
                     response.redirect('/');
-                })
+                });
         }
     };
     
@@ -99,6 +99,7 @@ class UserController{
     updateAccount = (request, response, next) => {
 
         var currentUser = GulpDatabase.firebase.auth().currentUser;
+        console.log(currentUser);
         if (currentUser != null) {
             var user = {
                 email: request.body.email,
@@ -114,14 +115,16 @@ class UserController{
                 currentUser.updateProfile({
                     displayName: user.displayName,
                     email: user.email
-                }).then(function() {
+                })
+                .then(function() {
                     var currentUser = GulpDatabase.firebase.auth().currentUser;
                     if (currentUser != null) {
                         request.session.user = currentUser;
                     }
                     request.session.userErrors.profile = ['Your details have been updated.'];
                     response.redirect('/account');
-                }).catch(function(error) {
+                })
+                .catch(function(error) {
                     request.session.userErrors.profile = [error.message];
                     response.redirect('/account');
                 });
@@ -174,6 +177,7 @@ class UserController{
     }
 
     getAccount(request, response, next) {
+        
         if (!request.session.token) {
             response.redirect('/');
         }
@@ -188,21 +192,29 @@ class UserController{
                 request.session.userErrors.avatar = ['You need to select a suitable file'];
                 response.redirect('/account');
             } 
-            console.log(this);
-            var photoURL = this.uploadFile(request.files.avatar, currentUser);
-            currentUser.updateProfile({
-                photoURL: photoURL
-            }).then(function() {
-                var currentUser = GulpDatabase.firebase.auth().currentUser;
-                if (currentUser != null) {
-                    request.session.user = currentUser;
-                }
-                request.session.userErrors.avatar = ['Your profile image has been updated.'];
+            var extensions = ["png", "jpg", "jpeg", "gif"];
+            if (this.allowedFile(request.files.avatar.name, extensions)) {
+                var userId = request.session.user.id;
+                var tempName = this.uploadLocalFile(request.files.avatar, userId);
+                var fileLink = GulpDatabase.bucket.upload(tempName);
+
+                currentUser.updateProfile({photoURL: 'https://via.placeholder.com/300x300?text=OFFS2'})
+                .then(function() {
+                    var currentUser = GulpDatabase.firebase.auth().currentUser;
+                    if (currentUser != null) {
+                        request.session.user = currentUser;
+                    }
+                    request.session.userErrors.profile = ['Your image have been updated.'];
+                    response.redirect('/account');
+                })
+                .catch((error) => {
+                    request.session.userErrors.profile = [error.message];
+                    response.redirect('/account');
+                });
+            } else {
+                request.session.userErrors.avatar = ["Only allowed filetypes: " + extensions.join(' ')];
                 response.redirect('/account');
-            }).catch(function(error) {
-                request.session.userErrors.profile = [error.message];
-                response.redirect('/account');
-            });
+            }currentUser
         } else {
             request.session.genericErrors = ['You have been logged out due to inactivity'];
             this.logout(request, response, next);
@@ -210,26 +222,15 @@ class UserController{
 
     };
 
-    uploadFile(file, user){
-        var extensions = [".png", ".jpg", ".jpeg", ".gif"];
-        if (this.allowed_file(file.filename, extensions)) {
-            var userToken = request.session.token;
-            var tmp = require('tmp');
-            var path = require('path');
-            var ext = path.extname(file);
-            var temp = tmp.fileSync({ mode: '0644', prefix: user.uid, postfix: ext });
-            console.log(temp);
-            return;
-            storage = GulpDatabase.storage();
-            result = storage.child(new_name).put(temp.name, userToken);
-            return result;
-        } else {
-            request.session.userErrors.avatar = ["Only allowed filetypes: ".join(extensions.join())];
-            response.redirect('/account');
-        }
+    uploadLocalFile(file, userId){
+        var tmp = require('tmp');
+        var path = require('path');
+        var ext = path.extname(file.name);
+        var temp = tmp.fileSync({ mode: '0644', prefix: userId, postfix: ext });
+        return temp.name;
     }
 
-    allowed_file(filename, extensions){
+    allowedFile(filename, extensions){
         return extensions.includes(filename.split('.').pop());
     }
 

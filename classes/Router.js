@@ -13,6 +13,9 @@ class Router{
 
     setVariables(){
         GulpApp.use(function(request, response, next) {
+            if (request.session.token) {
+                response.locals.loggedin = true;
+            }
             if (request.session.genericErrors) {
                 response.locals.genericErrors = request.session.genericErrors;
                 request.session.genericErrors = false;

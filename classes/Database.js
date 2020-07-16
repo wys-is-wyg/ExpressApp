@@ -13,10 +13,10 @@ class Database{
         this.firebase = firebase.initializeApp(firebaseConfig);
         this.auth = firebase.auth();
         this.firebaseAdmin = firebaseAdmin.initializeApp({
-            credential: firebaseAdmin.credential.cert(firebaseAdminConfig)
+            credential: firebaseAdmin.credential.cert(firebaseAdminConfig),
+            storageBucket: firebaseConfig.storageBucket,
         });
-        //storage = this.firebase.storage();
-
+        this.bucket = firebaseAdmin.storage().bucket();
         this.instance = this;
         return this;
     }

@@ -1,9 +1,10 @@
 <%- include('partials/header'); %> 
 <% var userName = ("displayName" in  locals.user) ? locals.user.displayName : false %>
 <% var userEmail = ("email" in  locals.user) ? locals.user.email : false %>
-<% var avatar = ("photoURL" in  locals.user) ? 'https://via.placeholder.com/300x300?text=???' : 'https://via.placeholder.com/300x300?text=???' %>
+<% var avatar = ("photoURL" in  locals.user) ? locals.user.photoURL : 'https://via.placeholder.com/300x300?text=???' %>
 <% var profileErrors = ("profile" in  locals.userErrors) ? locals.userErrors.profile : false %>
 <% var passwordErrors = ("password" in  locals.userErrors) ? locals.userErrors.password : false %>
+<% var avatarErrors = ("avatar" in  locals.userErrors) ? locals.userErrors.avatar : false %>
 
 			<div id="main">
 				<div class="container-fluid">
@@ -75,6 +76,11 @@
 									  </div>
 									</div>
 								</div>
+								<% if (avatarErrors) { %>
+									<% avatarErrors.forEach(function(error) { %>
+										<p><div class="alert alert-primary" role="alert"><%= error %></div></p>
+									<% }) %>
+								<% } %>
 							</form>
 						</main>
 					</div>

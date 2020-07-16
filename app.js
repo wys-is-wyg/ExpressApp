@@ -1,5 +1,5 @@
 var express = require('express');
-var session = require('express-session');
+var session = require('cookie-session');
 var path = require('path');
 var logger = require('morgan');
 var fileUpload = require('express-fileupload');
@@ -22,6 +22,7 @@ GulpApp.use(express.json());
 GulpApp.use(express.urlencoded({ extended: false }));
 GulpApp.use(express.static(path.join(__dirname, 'public')));
 
+GulpUser = null;
 var Database = require('./classes/Database'); 
 GulpDatabase = new Database(); 
 var Validator = require('./classes/Validator');
@@ -30,6 +31,8 @@ var Router = require('./classes/Router');
 GulpRouter = new Router();
 
 /*
+
+
 var http = require('http').Server(GulpApp);
 var io = require('socket.io')(http);
 var Socket = require('./classes/Socket');
