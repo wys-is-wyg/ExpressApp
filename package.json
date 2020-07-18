@@ -6,7 +6,8 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
-    "cookie-parser": "~1.4.4",
+    "client-sessions": "^0.8.0",
+    "cookie-parser": "^1.4.5",
     "cookie-session": "^1.4.0",
     "debug": "~2.6.9",
     "ejs": "~2.6.1",
@@ -15,8 +16,11 @@
     "express-session": "^1.17.1",
     "express-validator": "^6.6.0",
     "firebase": "^7.15.2",
+    "firestore-store": "^2.0.1",
     "http-errors": "~1.6.3",
-    "morgan": "~1.9.1"
+    "memorystore": "^1.6.2",
+    "morgan": "~1.9.1",
+    "session-file-store": "^1.4.0"
   },
   "devDependencies": {
     "express-upload": "^0.1.0",

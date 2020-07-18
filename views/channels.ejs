@@ -1,0 +1,77 @@
+<%- include('partials/header'); %> 
+<% var channels = ("channels" in  locals) ? locals.channels : false %>
+<% var generalChannelErrors = ("general" in  locals.channelErrors) ? locals.channelErrors.general : false %>
+<% var addChannelErrors = ("addChannel" in  locals.channelErrors) ? locals.channelErrors.addChannel : false %>
+<% var editChannelErrors = ("editChannel" in  locals.channelErrors) ? locals.channelErrors.editChannel : false %>
+<% var deleteChannelErrors = ("deleteChannel" in  locals.channelErrors) ? locals.channelErrors.deleteChannel : false %>
+			<div id="main">
+				<div class="container-fluid">
+					<div class="row">
+						<div id="sidebar" class="col-md-3">
+						</div>  
+						<main role="main" class="col-md-9">
+							<div id="channels">
+								<% if (channels) { %>
+									<ul class="list-group">
+										<li class="list-group-item d-flex justify-content-left align-items-center">
+											<h4>Your Channels <i class="fas fa-address-book float-right"></i></h4>
+										</li>
+									<% channels.forEach(function(channel) { %>
+										<li class="list-group-item channel-list-item d-flex justify-content-left align-items-center">
+											<div class="avatar-window">
+												<img src="<%= channel.image %>" alt="<%= channel.name %>">
+											</div>
+											<a href="/channel/<%= channel.slug %>/"><%= channel.name %></a>
+											<a href="/channel/edit/<%= channel.id %>/""><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+											<a href="/channel/delete/<%= channel.id %>/""><i class="fa fa-trash" aria-hidden="true"></i></a>
+											<span class="badge badge-primary badge-pill" data-placement="top" title="14 new messages...">14</span>
+										</li>
+									<% }) %>
+									</ul>
+								<% } else { %>
+									<p><div class="alert alert-primary" role="alert"> WHAAAAAT??? You have no channels, let's live a little, make a channel!</div></p>
+								<% }  %>
+							<% if (generalChannelErrors) { %>
+								<% generalChannelErrors.forEach(function(error) { %>
+									<p><div class="alert alert-primary" role="alert"><%= error %></div></p>
+								<% }) %>
+							<% } %>
+							</div>
+							<p>&nbsp;</p>
+							<h2>Add A New Channel</h2>
+							<hr>
+							<form id="channel-create-form" action="/channels/add" method="post" enctype="multipart/form-data">
+								<div class="form-group">
+									<label class="control-label">Display Name</label>
+									<input id="update-display-name" type="text" class="form-control" name="name" placeholder="Display Name" value="">
+								</div>
+								<div class="form-group">
+									<label class="check-input-group" for="public">
+										<input class="check-input" type="checkbox" id="public" name="public" value="public">
+										<span class="checkbox-slider round"></span>
+									</label>
+									<span class="align-label-middle">Public Channel</span>
+								</div>
+								<div class="form-group no-submit">
+									<label class="control-label">Add an Image</label>
+									<div class="input-group-append">
+									  <div class="custom-file">
+										<input type="file" class="custom-file-input" name="avatar" id="avatar-upload">
+										<label class="custom-file-label" for="avatar-upload">Choose file</label>
+									  </div>
+									</div>
+								</div>
+								<div class="form-group submit">
+									<button id="update" type="submit" class="btn btn-primary">Create</button>
+								</div>
+								<% if (addChannelErrors) { %>
+									<% addChannelErrors.forEach(function(error) { %>
+										<p><div class="alert alert-primary" role="alert"><%= error %></div></p>
+									<% }) %>
+								<% } %>
+							</form>
+						</main>
+					</div>
+				</div>
+			</div>
+<%- include('partials/footer'); %>

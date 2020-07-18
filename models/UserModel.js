@@ -3,39 +3,39 @@ class User{
 
     constructor(firebaseUser = false){
         this.user = firebaseUser;
-        this.get_user();
+        this.getUser();
     }
 
-    is_logged_in(){
-        this.get_user();
+    isLoggedIn(){
+        this.getUser();
         return (typeof this.user  === 'object');
     }
     
-    get_user(req){
+    getUser(req){
         this.user = req.session.user;
         return this.user;
     }
     
-    get_user_id(){
-        if (this.is_logged_in()) {
+    getUserId(){
+        if (this.isLoggedIn()) {
             return this.user.localId;
         }
         return false;
     }
     
-    get_user_id_token(){
-        if (this.is_logged_in()) {
+    getUserIdToken(){
+        if (this.isLoggedIn()) {
             return this.user.idToken;
         }
         return false;
     }
 
-    set_user(req, user){
+    setUser(req, user){
         req.session.user = user;
-        this.get_user();
+        this.getUser();
     }
 
-    unset_user(req){
+    unsetUser(req){
         this.user = false;
         req.session.user = false;
         req.session.destroy(() => {

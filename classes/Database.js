@@ -16,6 +16,7 @@ class Database{
             credential: firebaseAdmin.credential.cert(firebaseAdminConfig),
             storageBucket: firebaseConfig.storageBucket,
         });
+        this.storage = firebaseAdmin.firestore();
         this.bucket = firebaseAdmin.storage().bucket();
         this.instance = this;
         return this;

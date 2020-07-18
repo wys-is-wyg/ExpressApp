@@ -1,0 +1,19 @@
+#channels{
+    .list-group{
+        border: 1px solid $light;
+    }
+    .channel-list-item > *{
+        margin-right: 1rem;
+    }
+    .list-group-item{
+        &.active {
+            background: $medium;
+            border: none;
+            border-top: 1px solid $light;
+            border-bottom: 1px solid $light;
+        }
+        &:first-child{
+            border-bottom: 1px solid $light;
+        }
+    }
+}

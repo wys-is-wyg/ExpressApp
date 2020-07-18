@@ -1,5 +1,5 @@
-var createError = require('http-errors');
 var UserController = require('../controllers/UserController');
+var ChannelController = require('../controllers/ChannelController');
 
 class Router{
 
@@ -13,9 +13,6 @@ class Router{
 
     setVariables(){
         GulpApp.use(function(request, response, next) {
-            if (request.session.token) {
-                response.locals.loggedin = true;
-            }
             if (request.session.genericErrors) {
                 response.locals.genericErrors = request.session.genericErrors;
                 request.session.genericErrors = false;
@@ -26,6 +23,7 @@ class Router{
 
     addControllers() {
         var userController = new UserController();
+        var channelController = new ChannelController();
     }
 
     addBaseRoutes() {
@@ -37,6 +35,8 @@ class Router{
     }
 
     handle404s() {
+        var createError = require('http-errors');
+
         GulpApp.use(function(req, res, next) {
             next(createError(404));
         });

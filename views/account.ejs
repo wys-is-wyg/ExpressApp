@@ -6,6 +6,7 @@
 <% var passwordErrors = ("password" in  locals.userErrors) ? locals.userErrors.password : false %>
 <% var avatarErrors = ("avatar" in  locals.userErrors) ? locals.userErrors.avatar : false %>
 
+
 			<div id="main">
 				<div class="container-fluid">
 					<div class="row">
@@ -60,7 +61,9 @@
 							<hr>
 							<% if (avatar) { %>
 							<div id="avatar" class="col-md-3 col-6 p-0">
-								<img src="<%= avatar %>" alt="Your Profile Image">
+								<div class="avatar-window">
+									<img src="<%= avatar %>" alt="Your Profile Image">
+								</div>
 							</div>
 							<% } %>
 							<form id="avatar-upload-form" action="/avatar" method="post" enctype="multipart/form-data">

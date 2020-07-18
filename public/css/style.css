@@ -1,3 +1,12 @@
+a {
+  color: #718BC9;
+}
+
+a:hover {
+  color: #fff;
+  text-decoration: none;
+}
+
 .badge-primary {
   background-color: #718BC9;
   -webkit-box-shadow: inset 0px 3px 1px rgba(0, 0, 0, 0.1);
@@ -63,6 +72,56 @@ hr {
   border-top: 1px solid #718BC9;
 }
 
+.list-group {
+  margin-bottom: 3rem;
+  padding-top: 0.5rem;
+  padding-bottom: 1rem;
+  border-radius: 30px;
+  border: 1px solid #131821;
+}
+
+.list-group:last-child {
+  margin-bottom: 0;
+}
+
+.list-group h4 {
+  width: 100%;
+}
+
+.list-group-item {
+  background: none;
+  border: none;
+}
+
+.list-group-item.active {
+  background: #272e3b;
+  border: none;
+  border-top: 1px solid #131821;
+  border-bottom: 1px solid #131821;
+}
+
+.list-group-item:first-child {
+  border-bottom: 1px solid #131821;
+}
+
+.list-group-item-action {
+  color: #fff;
+}
+
+.avatar-window {
+  display: inline-block;
+  position: relative;
+  width: 60px;
+  height: 60px;
+  overflow: hidden;
+  border-radius: 50%;
+}
+
+.avatar-window img {
+  width: auto;
+  height: 100%;
+}
+
 /* Forms */
 .formInputStyle, .form-group .custom-file-label:focus,
 .form-group .custom-file-input:focus,
@@ -111,6 +170,13 @@ hr {
   cursor: pointer;
 }
 
+.form-group.no-submit .custom-file-label::after {
+  border-top-left-radius: 0;
+  border-top-right-radius: 30px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 30px;
+}
+
 .form-group .input-group-append button {
   border: none;
   height: 60px;
@@ -127,6 +193,10 @@ hr {
   background: #06bc72;
 }
 
+.form-group.submit {
+  margin-top: 2rem;
+}
+
 .btn-primary {
   background: #718BC9;
   border-radius: 30px;
@@ -136,6 +206,65 @@ hr {
 
 .btn-primary:hover {
   background: #06bc72;
+}
+
+.check-input-group {
+  position: relative;
+  display: inline-block;
+  width: 80px;
+  height: 50px;
+  top: -10px;
+}
+
+.check-input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.checkbox-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  -webkit-transition: .4s;
+  transition: .4s;
+  background-color: #272e3b !important;
+  -webkit-box-shadow: inset 0px 3px 1px rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0px 3px 1px rgba(0, 0, 0, 0.1);
+  border-radius: 42px;
+}
+
+.checkbox-slider:before {
+  position: absolute;
+  content: "";
+  height: 42px;
+  width: 42px;
+  left: 4px;
+  bottom: 4px;
+  background-color: #4D5F8A;
+  -webkit-transition: all .5s ease;
+  transition: all .5s ease;
+  border-radius: 50%;
+}
+
+.check-input:checked + .checkbox-slider:before {
+  background-color: #718BC9 !important;
+  -webkit-transform: translateX(30px);
+  transform: translateX(30px);
+}
+
+.form-group span.align-label-middle {
+  height: 50px;
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-left: 1rem;
 }
 
 .modal-dialog {
@@ -285,42 +414,6 @@ hr {
   min-height: calc(100vh - 219px);
 }
 
-#sidebar h4 {
-  width: 100%;
-}
-
-#sidebar .list-group {
-  margin-bottom: 3rem;
-  padding-top: 0.5rem;
-  padding-bottom: 1rem;
-  border-radius: 30px;
-  border: 1px solid #131821;
-}
-
-#sidebar .list-group:last-child {
-  margin-bottom: 0;
-}
-
-#sidebar .list-group-item {
-  background: none;
-  border: none;
-}
-
-#sidebar .list-group-item.active {
-  background: #272e3b;
-  border: none;
-  border-top: 1px solid #131821;
-  border-bottom: 1px solid #131821;
-}
-
-#sidebar .list-group-item:first-child {
-  border-bottom: 1px solid #131821;
-}
-
-#sidebar .list-group-item-action {
-  color: #fff;
-}
-
 body {
   background: #1a202e;
   font-family: "Open Sans", sans-serif;
@@ -354,9 +447,9 @@ h1, h2, h3, h4 {
   margin-bottom: 2rem;
 }
 
-#avatar img {
-  width: 100%;
-  height: auto;
+#avatar .avatar-window {
+  width: 120px;
+  height: 120px;
 }
 
 #chat {
@@ -470,5 +563,24 @@ h1, h2, h3, h4 {
   color: #06bc72;
   font-size: 2rem;
   margin-left: 1rem;
+}
+
+#channels .list-group {
+  border: 1px solid #4D5F8A;
+}
+
+#channels .channel-list-item > * {
+  margin-right: 1rem;
+}
+
+#channels .list-group-item.active {
+  background: #272e3b;
+  border: none;
+  border-top: 1px solid #4D5F8A;
+  border-bottom: 1px solid #4D5F8A;
+}
+
+#channels .list-group-item:first-child {
+  border-bottom: 1px solid #4D5F8A;
 }
 /*# sourceMappingURL=style.css.map */
