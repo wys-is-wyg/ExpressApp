@@ -1,5 +1,7 @@
 <%- include('partials/header'); %> 
-<% var channels = ("channels" in  locals) ? locals.channels : false %>
+<% var users = locals.users %>
+<% var ownedChannels = ("ownedChannels" in  locals) ? locals.ownedChannels : false %>
+<% var subscribedChannels = ("subscribedChannels" in  locals) ? locals.subscribedChannels : false %>
 <% var generalChannelErrors = ("general" in  locals.channelErrors) ? locals.channelErrors.general : false %>
 <% var addChannelErrors = ("addChannel" in  locals.channelErrors) ? locals.channelErrors.addChannel : false %>
 <% var editChannelErrors = ("editChannel" in  locals.channelErrors) ? locals.channelErrors.editChannel : false %>
@@ -7,17 +9,15 @@
 			<div id="main">
 				<div class="container-fluid">
 					<div class="row">
-						<div id="sidebar" class="col-md-3">
-						</div>  
-						<main role="main" class="col-md-9">
-							<div id="channels">
-								<% if (channels) { %>
+						<div id="sidebar" class="col-md-4 col-sm-6">
+							<div id="owned-channels" class="user-channels">
+								<% if (ownedChannels) { %>
 									<ul class="list-group">
-										<li class="list-group-item d-flex justify-content-left align-items-center">
-											<h4>Your Channels <i class="fas fa-address-book float-right"></i></h4>
+										<li class="list-group-item d-flex justify-content-between align-items-center">
+											<h4>Your Channels</h4>
 										</li>
-									<% channels.forEach(function(channel) { %>
-										<li class="list-group-item channel-list-item d-flex justify-content-left align-items-center">
+									<% ownedChannels.forEach(function(channel) { %>
+										<li class="list-group-item channel-list-item d-flex justify-content-between align-items-center">
 											<div class="avatar-window">
 												<img src="<%= channel.image %>" alt="<%= channel.name %>">
 											</div>
@@ -38,6 +38,36 @@
 							<% } %>
 							</div>
 							<p>&nbsp;</p>
+							<div id="subscribed-channels" class="user-channels">
+								<% if (subscribedChannels) { %>
+									<ul class="list-group">
+										<li class="list-group-item d-flex justify-content-between align-items-center">
+											<h4>Subscribed Channels</h4>
+										</li>
+									<% subscribedChannels.forEach(function(channel) { %>
+										<li class="list-group-item channel-list-item d-flex justify-content-between align-items-center">
+											<div class="avatar-window">
+												<img src="<%= channel.image %>" alt="<%= channel.name %>">
+											</div>
+											<a href="/channel/<%= channel.slug %>/"><%= channel.name %></a>
+											<a href="/channel/edit/<%= channel.id %>/""><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+											<a href="/channel/delete/<%= channel.id %>/""><i class="fa fa-trash" aria-hidden="true"></i></a>
+											<span class="badge badge-primary badge-pill" data-placement="top" title="14 new messages...">14</span>
+										</li>
+									<% }) %>
+									</ul>
+								<% } else { %>
+									<p><div class="alert alert-primary" role="alert">Make some friends on here and join their channels!</div></p>
+								<% }  %>
+							<% if (generalChannelErrors) { %>
+								<% generalChannelErrors.forEach(function(error) { %>
+									<p><div class="alert alert-primary" role="alert"><%= error %></div></p>
+								<% }) %>
+							<% } %>
+							</div>
+							<p>&nbsp;</p>
+						</div>  
+						<main role="main" class="col-md-8 col-sm-6">
 							<h2>Add A New Channel</h2>
 							<hr>
 							<form id="channel-create-form" action="/channels/add" method="post" enctype="multipart/form-data">
@@ -48,7 +78,7 @@
 								<div class="form-group">
 									<label class="check-input-group" for="public">
 										<input class="check-input" type="checkbox" id="public" name="public" value="public">
-										<span class="checkbox-slider round"></span>
+										<span class="checkbox-slider"></span>
 									</label>
 									<span class="align-label-middle">Public Channel</span>
 								</div>
@@ -59,6 +89,31 @@
 										<input type="file" class="custom-file-input" name="avatar" id="avatar-upload">
 										<label class="custom-file-label" for="avatar-upload">Choose file</label>
 									  </div>
+									</div>
+								</div>
+								<div id="channel-users">
+									<div class="form-group">
+										<h4>Add Users</h4>
+										<div id="user-window">
+											<div id="user-window-channel" class="w-100">
+												<% if (users) { %>
+													<% users.forEach(function(user) { %>
+														<div class="user-check">
+															<label class="user-check-input-group" for="user<%= user.id %>">
+																<input class="user-check-input" id="user<%= user.id %>" type="checkbox" name="users" value="<%= user.id %>">
+																<div class="avatar-window">
+																	<img src="<%= user.image %>" alt="<%= user.name %>">
+																</div>
+																<span class="user-checkbox-hover"></span>
+															</label>
+															<p><%= user.name %></p>
+														</div>
+													<% }) %>
+												<% } else { %>
+													<p><div class="alert alert-primary" role="alert">There are no people in here yet!</div></p>
+												<% }  %>
+											</div>
+										</div>
 									</div>
 								</div>
 								<div class="form-group submit">

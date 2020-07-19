@@ -35,19 +35,66 @@ class ChannelController{
     getChannels = async (request, response, next) => {
         
         if (!request.session.token) {
-            response.redirect('/');
+           response.redirect('/');
         }
 
         var currentUser = await GulpDatabase.firebase.auth().currentUser;
 
+        var users = [];
+        await GulpDatabase.firebaseAdmin.auth().listUsers()
+            .then((data) => {
+                data.users.forEach((datum) => {
+                    if (datum.uid != currentUser.uid) {
+                        users.push({
+                            id: datum.uid,
+                            name: datum.displayName,
+                            image: datum.photoURL,
+                        });
+                    }
+                });
+                if (users.length == 0) {
+                    users = false;
+                }
+            })
+            .catch(function(error) {
+                console.log('Error fetching user data:', error);
+            });
+
+        var subscribedChannels = [];
+        await GulpDatabase.storage.collection('channels')
+            .where('users', 'array-contains', currentUser.uid)
+            .orderBy('createdAt', 'desc')
+            .get()
+            .then((data) => {
+                data.forEach((datum) => {
+                    subscribedChannels.push({
+                        id: datum.id,
+                        slug: datum.data().slug,
+                        public: datum.data().public,
+                        name: datum.data().name,
+                        image: datum.data().image,
+                        createdAt: datum.data().createdAt,
+                    });
+                });
+                if (subscribedChannels.length == 0) {
+                    subscribedChannels = false;
+                }
+                
+            })
+            .catch((error) => {
+                request.session.channelErrors.general = [error.message];
+                response.render('channels');
+            });
+
+
+        var ownedChannels = [];
         await GulpDatabase.storage.collection('channels')
         .where('owner', '==', currentUser.uid)
 		.orderBy('createdAt', 'desc')
 		.get()
 		.then((data) => {
-			let channels = [];
 			data.forEach((datum) => {
-				channels.push({
+				ownedChannels.push({
                     id: datum.id,
                     slug: datum.data().slug,
                     public: datum.data().public,
@@ -56,17 +103,19 @@ class ChannelController{
 					createdAt: datum.data().createdAt,
 				});
             });
-            if (channels.length == 0) {
-                channels = false;
+            if (ownedChannels.length == 0) {
+                ownedChannels = false;
             }
-            response.render('channels', {'channels': channels} );
             
 		})
 		.catch((error) => {
-            console.log(error);
-            request.session.channelErrors.general = [error.message];
+            response.locals.channelErrors.general = [error.message];
             response.render('channels');
-		});
+        });
+        response.locals.users = users;
+        response.locals.ownedChannels = ownedChannels;
+        response.locals.subscribedChannels = subscribedChannels;
+        response.render('channels');
     };
 
     addChannel = async (request, response, next) => {
@@ -82,9 +131,13 @@ class ChannelController{
         var currentUser = await GulpDatabase.firebase.auth().currentUser;
         var slugName = GulpValidator.makeSlug(request.body.name);
         var image = '';
-
-        if (request.files.avatar) {
-            var { result, validExtension } = GulpImageUpload.uploadImage(request.files.avatar, slugName+currentUser.uid);
+        var publicChannel = (request.body.public) ? request.body.public : false;
+        var avatar = (request.files && request.files.avatar) ? request.files.avatar : false;
+        var users = (request.body.users) ? request.body.users : [];
+        var users = {};
+        
+        if (avatar) {
+            var { result, validExtension } = GulpImageUpload.uploadImage(avatar, slugName+currentUser.uid);
             if (validExtension) {
                 image = result;
             } else {
@@ -97,8 +150,9 @@ class ChannelController{
             owner: currentUser.uid,
             name: request.body.name,
             slug: slugName,
-            public: request.body.public,
+            public: publicChannel,
             image: image,
+            users: users,
             createdAt: new Date().toISOString()
         }
     
@@ -113,61 +167,6 @@ class ChannelController{
                 response.redirect('/channels');
             });
     };
-
-    
-    updateAvatar = async (request, response, next) => {
-        
-        var fs = require('fs');
-        var currentChannel = await GulpDatabase.firebase.auth().currentChannel;
-        if (currentChannel != null) {
-            if(!request.files) {
-                request.session.channelErrors.avatar = ['You need to select a suitable file'];
-                response.redirect('/account');
-            } 
-            var extensions = ["png", "jpg", "jpeg", "gif"];
-            var ext = this.allowedFile(request.files.avatar.name, extensions);
-            if (ext) {
-                var newAvatarLocation = '/img/' + currentChannel.uid  + '.' + ext;
-                request.files.avatar.mv('./public' + newAvatarLocation);
-                await currentChannel.updateProfile({photoURL: newAvatarLocation})
-                .then(function() {
-                    var currentChannel = GulpDatabase.firebase.auth().currentChannel;
-                    if (currentChannel != null) {
-                        request.session.channel = currentChannel;
-                    }
-                    request.session.channelErrors.avatar = ['Your image has been updated.'];
-                    response.redirect('/account');
-                })
-                .catch((error) => {
-                    request.session.channelErrors.avatar = [error.message];
-                    response.redirect('/account');
-                });
-            } else {
-                request.session.channelErrors.avatar = ["Only allowed filetypes: " + extensions.join(' ')];
-                response.redirect('/account');
-            }
-        } else {
-            request.session.genericErrors = ['You have been logged out due to inactivity'];
-            this.logout(request, response, next);
-        }
-
-    };
-
-    uploadLocalFile(file, channelId){
-        var tmp = require('tmp');
-        var path = require('path');
-        var ext = path.extname(file.name);
-        var temp = tmp.fileSync({ mode: '0644', prefix: channelId, postfix: ext });
-        return temp.name;
-    }
-
-    allowedFile(filename, extensions){
-        var extExists = extensions.includes(filename.split('.').pop());
-        if (extExists) {
-            return filename.split('.').pop();
-        }
-        return false;
-    }
 
 }
 module.exports = ChannelController;
