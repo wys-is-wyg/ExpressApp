@@ -6,7 +6,10 @@ var fileUpload = require('express-fileupload');
 
 GulpApp = express();
 GulpApp.use(session({
-    secret: 'hurr'
+    secret: 'hurrdurr',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false }
 }));
 
 // view engine setup
