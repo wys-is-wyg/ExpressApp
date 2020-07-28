@@ -1,0 +1,24 @@
+body{
+    background: $background;
+    font-family: $open;
+    color: #fff;
+}
+h1, h2, h3, h4{
+    font-family: $condensed;
+    font-weight: 700;
+    color: #fff;
+}
+.bg-dark{
+    background: $dark !important;
+}
+#app-container{
+    background: $black;
+    margin: 60px;
+    border-radius: 30px;
+    width: calc(100vw - 120px);
+    min-height: calc(100vh - 120px);
+}
+#main main{
+    border-radius: 0 0 30px 0;
+    padding: 3rem 2rem;
+}

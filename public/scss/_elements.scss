@@ -1,0 +1,97 @@
+a {
+    color: $lightest;
+    &:hover{
+        color: #fff;
+        text-decoration: none;
+    }
+}
+.badge-primary {
+    background-color: $lightest;
+    @include box-shadow(0px, 3px, 1px, rgba(0,0,0,0.1), true);
+}
+.dropdown-divider {
+    border-top: 1px solid $light;
+}
+.text-muted {
+    color: $lightest !important;
+}
+.popover{
+    background: $medium;
+    i{
+        color: #fff;
+        &:first-child{
+            margin-right: 1rem;
+        }
+    }
+}
+.bs-popover-auto[x-placement^=bottom]>.arrow::after,
+.bs-popover-bottom>.arrow::after,
+.bs-popover-auto[x-placement^=bottom]>.arrow::before,
+.bs-popover-bottom>.arrow::before {
+    border-bottom-color: $medium;
+}
+.popover i,
+.media i{
+    cursor: pointer;
+}
+.grow { 
+    transition: all .3s ease-in-out; 
+}
+.grow:hover { 
+    transform: scale(1.1); 
+}
+.alert-primary {
+    color: #fff;
+    background-color: $mediumlight;
+    border: none;
+    border-radius: 30px;
+    padding: 15px 30px;
+}
+.errors{
+    margin-top: 2rem;
+}
+hr{
+    margin-bottom: 2rem;
+    border-top: 1px solid $lightest;
+}
+.list-group{
+    margin-bottom: 3rem;
+    padding-top: 0.5rem;
+    padding-bottom: 1rem;
+    border-radius: 30px;
+    border: 1px solid $black;
+    &:last-child{
+        margin-bottom: 0;
+    }
+    h4{
+        width: 100%;
+    }
+}
+.list-group-item{
+    background: none;
+    border: none;
+    &.active {
+        background: $medium;
+        border: none;
+        border-top: 1px solid $black;
+        border-bottom: 1px solid $black;
+    }
+    &:first-child{
+        border-bottom: 1px solid $black;
+    }
+}
+.list-group-item-action {
+    color: #fff;
+}
+.avatar-window{
+    display: inline-block;
+    position: relative;
+    width: 60px;
+    height: 60px;
+    overflow: hidden;
+    border-radius: 50%;
+    img{
+        width: auto;
+        height: 100%;
+    }
+}

@@ -1,0 +1,61 @@
+
+#chat{
+    border-radius: 30px;
+    border: 1px solid $light;
+    padding: 2rem 2rem 3rem;
+    .media{
+        margin-top: 1rem;
+        margin-bottom: 3rem;
+        .media-body{
+            border-radius: 5px 15px 15px 30px;
+            padding: 15px 30px 20px;
+            position: relative;
+            background: $light;
+            max-width: 50%;
+            i{
+                position: absolute;
+                right: 1rem;
+                bottom: 1rem;
+                color: #fff;
+                font-size: 1.4rem;
+            }
+        }
+        .text-muted{
+            margin-left: 1rem;
+        }
+        .user{
+            text-align: center;
+            margin-right: 2rem;
+            img{
+                border-radius: 90px;
+            }
+            img, 
+            p{
+                display: block;
+            }
+            p{
+                width: 100%;
+                margin-top: 0.6rem;
+                margin-left: 0;
+                color: #fff;
+            }
+        }
+        &.in{
+            -ms-flex-direction: row-reverse!important;
+            flex-direction: row-reverse!important;
+            display: -ms-flexbox!important;
+            display: flex!important;
+            .media-body{
+                background: $green;
+                border-radius: 15px 5px 30px 15px;
+            }
+            .text-muted{
+                margin-right: 1rem;
+            }
+            .user{
+                margin-right: 0;
+                margin-left: 2rem;
+            }
+        }
+    }
+}

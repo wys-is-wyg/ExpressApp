@@ -1,0 +1,96 @@
+<%- include('partials/header'); %> 
+<% 
+var userName = ("displayName" in  locals.user) ? locals.user.displayName : false
+var userEmail = ("email" in  locals.user) ? locals.user.email : false
+var avatar = ("photoURL" in  locals.user) ? locals.user.photoURL : 'https://via.placeholder.com/300x300?text=???'
+if (locals.errors) {
+	var profileErrors = ("profile" in  locals.errors) ? locals.errors.profile : false
+	var passwordErrors = ("password" in  locals.errors) ? locals.errors.password : false
+	var avatarErrors = ("avatar" in  locals.errors) ? locals.errors.avatar : false
+} 
+%>
+
+
+			<div id="main">
+				<div class="container-fluid">
+					<div class="row">
+						<div id="sidebar" class="col-md-4 col-sm-6">
+						</div>  
+						<main role="main" class="col-md-8 col-sm-6">
+							<h1>Your Account</h1>
+							<hr>
+							<h2>Your Profile</h2>
+							<hr>
+							<form action="/account" method="post">
+								<div class="form-group">
+									<label class="control-label">Display Name</label>
+									<input id="update-display-name" type="text" class="form-control" name="displayName" placeholder="Display Name" value="<%= userName %>">
+								</div>
+								<div class="form-group">
+									<label class="control-label">Email Address</label>
+									<input id="update-email" type="email" class="form-control" name="email" placeholder="Email" value="<%= userEmail %>">
+								</div>
+								<div class="form-group submit">
+									<button id="update" type="submit" class="btn btn-primary">Update</button>
+								</div>
+								<% if (profileErrors) { %>
+									<% profileErrors.forEach(function(error) { %>
+										<p><div class="alert alert-primary" role="alert"><%= error %></div></p>
+									<% }) %>
+								<% } %>
+							</form>
+							<p>&nbsp;</p>
+							<h2>Your Password</h2>
+							<hr>
+							<form action="/password" method="post">
+								<div class="form-group">
+									<label class="control-label">Password</label>
+									<input id="update-password" type="password" class="form-control" name="password" placeholder="Password">
+								</div>
+								<div class="form-group">
+									<label class="control-label">Password Confirmation</label>
+									<input type="password" class="form-control" name="passwordConfirm" placeholder="Password Confirmation">
+								</div>
+								<div class="form-group submit">
+									<button id="update" type="submit" class="btn btn-primary">Change Your Password</button>
+								</div>
+								<% if (passwordErrors) { %>
+									<% passwordErrors.forEach(function(error) { %>
+										<p><div class="alert alert-primary" role="alert"><%= error %></div></p>
+									<% }) %>
+								<% } %>
+							</form>
+							<p>&nbsp;</p>
+							<h2>Your Profile Image</h2>
+							<hr>
+							<% if (avatar) { %>
+							<div id="avatar" class="col-md-3 col-6 p-0">
+								<div class="avatar-window">
+									<img src="<%= avatar %>" alt="Your Profile Image">
+								</div>
+							</div>
+							<% } %>
+							<form id="avatar-upload-form" action="/avatar" method="post" enctype="multipart/form-data">
+								<div class="form-group">
+									<label class="control-label">Add/Edit Your Profile Image</label>
+									<div class="input-group">
+									  <div class="custom-file">
+										<input type="file" class="custom-file-input" name="avatar" id="avatar-upload">
+										<label class="custom-file-label" for="avatar-upload">Choose file</label>
+									  </div>
+									  <div class="input-group-append">
+										<button id="avatar-submit" class="btn btn-outline-secondary" type="submit">Upload</button>
+									  </div>
+									</div>
+								</div>
+								<% if (avatarErrors) { %>
+									<% avatarErrors.forEach(function(error) { %>
+										<p><div class="alert alert-primary" role="alert"><%= error %></div></p>
+									<% }) %>
+								<% } %>
+							</form>
+						</main>
+					</div>
+				</div>
+			</div>
+<%- include('partials/footer'); %>

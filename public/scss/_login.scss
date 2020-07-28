@@ -1,0 +1,53 @@
+.modal-dialog {
+    min-width: 50vw;
+    margin: 3rem auto;
+}
+.modal-content {
+    background-color: $background;
+    border: none;
+    border-radius: 30px;
+    padding: 30px;
+    a{
+        color: #fff;
+    }
+    .nav-tabs{
+        width: 100%;
+        border: none;
+        .nav-link{
+            border-radius: 30px;
+            padding: 1rem 2rem;
+            border: 1px solid $lightest;
+            &.active{
+                background-color: $lightest;
+                color: #fff;
+            }
+            &.login{
+                border-top-left-radius: 30px;
+                border-top-right-radius: 0;
+                border-bottom-left-radius: 30px;
+                border-bottom-right-radius: 0;
+            }
+            &.register{
+                border-top-left-radius: 0;
+                border-top-right-radius: 30px;
+                border-bottom-left-radius: 0;
+                border-bottom-right-radius: 30px;
+            }
+        }
+    }
+    .submit{
+        margin-top: 30px;
+    }
+}
+.modal-header {
+    padding-top: 0;
+    border-bottom: none;
+    position: relative;
+    .close {
+        position: absolute;
+        color: #fff;
+        text-shadow: none;
+        opacity: 1;
+        right: 30px;
+    }
+}

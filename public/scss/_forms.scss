@@ -1,0 +1,130 @@
+/* Forms */
+.formInputStyle{
+    background-color: $medium !important;
+    border-radius: 30px;
+    height: 60px;
+    padding: 15px;
+    border: none;
+    color: #fff;
+    -webkit-box-shadow: inset 0px 3px 1px rgba(0, 0, 0, 0.1);
+    box-shadow: inset 0px 3px 1px rgba(0, 0, 0, 0.1);
+}
+.form-group{
+    .custom-file-label,
+    .custom-file-input,
+    input[type="file"],
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+        &:focus{
+            box-shadow: inset 0px 3px 1px rgba(0, 0, 0, 0.1);
+            @extend .formInputStyle;
+        }
+        @extend .formInputStyle;
+    }
+    .custom-file-label{
+        line-height: 1.8;
+        padding: 15px 30px;
+    }
+    .custom-file-label::after {
+        color: #fff;
+        background-color: $mediumlight;
+        border: none;
+        border-radius: 0;
+        height: 60px;
+        padding: 15px;
+        line-height: 1.8;
+        cursor: pointer;
+    }
+    &.no-submit{
+        .custom-file-label::after {
+            border-top-left-radius: 0;
+            border-top-right-radius: 30px;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 30px;
+        }
+    }
+    .input-group-append{
+        button{
+            border: none;
+            height: 60px;
+            padding: 15px;
+            border-top-left-radius: 0;
+            border-top-right-radius: 30px;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 30px;
+            background-color: $lightest;
+            color: #fff;
+            &:hover{
+                background: $green;
+            }
+        }
+    }
+    &.submit{
+        margin-top: 2rem;
+    }
+}
+.btn-primary{
+    background: $lightest;
+    border-radius: 30px;
+    padding: 15px 30px;
+    border: none;
+    &:hover{
+        background: $green;
+    }
+}
+.check-input-group {
+    position: relative;
+    display: inline-block;
+    width: 80px;
+    height: 50px;
+    top: -10px;
+}
+.check-input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.checkbox-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    -webkit-transition: .4s;
+    transition: .4s;
+    background-color: $medium !important;
+    -webkit-box-shadow: inset 0px 3px 1px rgba(0, 0, 0, 0.1);
+    box-shadow: inset 0px 3px 1px rgba(0, 0, 0, 0.1);
+    border-radius: 42px;
+}
+.checkbox-slider:before {
+    position: absolute;
+    content: "";
+    height: 42px;
+    width: 42px;
+    left: 4px;
+    bottom: 4px;
+    background-color: $light;
+	-webkit-transition: all .5s ease;
+	-moz-transition: all .5s ease;
+	-o-transition: all .5s ease;
+	-ms-transition: all .5s ease;
+	transition: all .5s ease;
+    border-radius: 50%;
+}
+.check-input:checked + .checkbox-slider:before {
+    background-color: $lightest !important;
+    -webkit-transform: translateX(30px);
+    -ms-transform: translateX(30px);
+    transform: translateX(30px);
+}
+.form-group{
+	span.align-label-middle{
+		height: 50px;
+		display: inline-flex;
+		align-items: center;
+		margin-left: 1rem;
+	}
+}
