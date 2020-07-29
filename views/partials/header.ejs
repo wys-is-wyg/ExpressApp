@@ -47,15 +47,17 @@
 							<% } %>
 						</ul>
 					</nav>
-					<% if (locals.genericErrors) { %>
+				<% if (locals.errors) { %>
+					<% if (locals.errors.general) { %>
 						<div class="container">
 							<div class="row justify-content-md-center">
 								<div class="generic-errors col-6">
-									<% locals.genericErrors.forEach(function(error) { %>
+									<% locals.errors.general.forEach(function(error) { %>
 										<p class="alert alert-primary" role="alert"><%= error %></p>
 									<% }) %>
 								</div>
 							</div>
 						</div>
 					<% } %>
+				<% } %>
 				</header>

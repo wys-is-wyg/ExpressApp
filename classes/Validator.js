@@ -56,7 +56,7 @@ class Validator{
         if (data.password.length < 6) {
             errors.push('Your password must be at least 6 characters in length');
         } 
-        if (data.password !== data.confirmPassword) {
+        if (data.password !== data.passwordConfirm) {
             errors.push('Your passwords must both match');
         }
     
