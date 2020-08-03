@@ -25,17 +25,36 @@
 }
 #user-window{
     width: 100%;
-    height: 240px;
+    height: 300px;
     display: block;
     overflow: hidden;
     background-color: $medium !important;
     -webkit-box-shadow: inset 0px 3px 1px rgba(0, 0, 0, 0.1);
     box-shadow: inset 0px 3px 1px rgba(0, 0, 0, 0.1);
     border-radius: 240px;
-    padding: 30px 45px;
+    padding: 30px 45px 30px 60px;
     #user-window-channel{
-        overflow: hidden;
+        overflow-x: scroll;
+        overflow-y: hidden;
+        white-space: nowrap;
     }
+}
+#user-window-channel::-webkit-scrollbar-track
+{
+	border-radius: 10px;
+	background-color: $medium;
+}
+
+#user-window-channel::-webkit-scrollbar
+{
+	width: 12px;
+	background-color: $medium;
+}
+
+#user-window-channel::-webkit-scrollbar-thumb
+{
+	border-radius: 10px;
+	background-color: $light;
 }
 
 .user-check {
@@ -44,6 +63,8 @@
     height: 190px;
     margin-right: 4rem;
     text-align: center;
+    margin-bottom: 1rem;
+    margin-top: 1rem;
     p{
         width: 100%;
     }
@@ -78,8 +99,8 @@
             position: absolute;
             content: "";
             top: 0;
-            left: 0;
-            right: 0;
+            left: 4px;
+            right: -4px;
             bottom: 0;
             background-color: rgba(0,0,0,0.4);
             -webkit-transition: all .5s ease;
@@ -114,6 +135,5 @@
         display: inline-block;
         width: 100%;
         height: 100%;
-        margin-top: -24px;
     }
 }

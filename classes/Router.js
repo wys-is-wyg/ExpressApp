@@ -1,4 +1,6 @@
 var UserController = require('../controllers/UserController');
+var ChannelController = require('../controllers/ChannelController');
+var createError = require('http-errors');
 
 class Router{
 
@@ -16,12 +18,14 @@ class Router{
                 response.locals.errors = request.session.errors;
             }
             request.session.errors = {};
+            request.session.errors.general = [];
             next();
         });
     }
 
     addControllers() {
         var userController = new UserController();
+        var channelController = new ChannelController();
     }
 
     addBaseRoutes() {
@@ -33,8 +37,6 @@ class Router{
     }
 
     handle404s() {
-        var createError = require('http-errors');
-
         AraDTApp.use(function(req, res, next) {
             next(createError(404));
         });

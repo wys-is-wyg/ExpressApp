@@ -1,11 +1,13 @@
 <%- include('partials/header'); %> 
-<% var users = locals.users %>
-<% var ownedChannels = ("ownedChannels" in  locals) ? locals.ownedChannels : false %>
-<% var subscribedChannels = ("subscribedChannels" in  locals) ? locals.subscribedChannels : false %>
-<% var generalChannelErrors = ("general" in  locals.channelErrors) ? locals.channelErrors.general : false %>
-<% var addChannelErrors = ("addChannel" in  locals.channelErrors) ? locals.channelErrors.addChannel : false %>
-<% var editChannelErrors = ("editChannel" in  locals.channelErrors) ? locals.channelErrors.editChannel : false %>
-<% var deleteChannelErrors = ("deleteChannel" in  locals.channelErrors) ? locals.channelErrors.deleteChannel : false %>
+<% 
+var users = locals.users
+var ownedChannels = ("ownedChannels" in  locals) ? locals.ownedChannels : false
+var subscribedChannels = ("subscribedChannels" in  locals) ? locals.subscribedChannels : false
+var generalChannelErrors = ("general" in  locals.errors) ? locals.errors.general : false
+var addChannelErrors = ("addChannel" in  locals.errors) ? locals.errors.addChannel : false
+var editChannelErrors = ("editChannel" in  locals.errors) ? locals.errors.editChannel : false
+var deleteChannelErrors = ("deleteChannel" in  locals.errors) ? locals.errors.deleteChannel : false 
+%>
 			<div id="main">
 				<div class="container-fluid">
 					<div class="row">
@@ -22,8 +24,8 @@
 												<img src="<%= channel.image %>" alt="<%= channel.name %>">
 											</div>
 											<a href="/channel/<%= channel.slug %>/"><%= channel.name %></a>
-											<a href="/channel/edit/<%= channel.id %>/""><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
-											<a href="/channel/delete/<%= channel.id %>/""><i class="fa fa-trash" aria-hidden="true"></i></a>
+											<a href="/channels/edit/<%= channel.id %>/""><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+											<a href="/channels/delete/<%= channel.id %>/""><i class="fa fa-trash" aria-hidden="true"></i></a>
 											<span class="badge badge-primary badge-pill" data-placement="top" title="14 new messages...">14</span>
 										</li>
 									<% }) %>
@@ -95,7 +97,7 @@
 									<div class="form-group">
 										<h4>Add Users</h4>
 										<div id="user-window">
-											<div id="user-window-channel" class="w-100">
+											<div id="user-window-channel">
 												<% if (users) { %>
 													<% users.forEach(function(user) { %>
 														<div class="user-check">
