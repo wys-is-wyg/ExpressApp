@@ -1,5 +1,5 @@
 /**
- * UserMethod Class.
+ * UserModel Class.
  * 
  * Singleton class that wraps Firebase methods for 
  * Auth users, such as signInWithEmailAndPassword()
@@ -13,21 +13,21 @@ class UserModel{
      * Model constructor. 
      * 
      * Assigns empty values for current user.
-     * On subsequent instantiation, returns initial class, 
+     * On subsequent instantiation, returns initial class.
      */
     constructor(){
         
-        //If class already instatiated, return the initial instance
+        // If class already instatiated, return the initial instance
         if (typeof this.instance === 'object') {
             return this.instance;
         }
 
-        //Set CurrentUser values to false
+        // Set CurrentUser values to false
         this.id = false;
         this.currentUser = false;
         this.isLoggedIn = false;
 
-        //assign class instance to this.instance
+        // assign class instance to this.instance
         this.instance = this;
         return this;
     }
@@ -75,32 +75,32 @@ class UserModel{
      */
     login = async (request, response) => {
 
-        //Extract form data from request
+        // Extract form data from request
         var user = {
             email: request.body.email,
             password: request.body.password
         }
-        //Check is email is valid and password is over 6 chars
+        // Check is email is valid and password is over 6 chars
         var { valid, errors } = AraDTValidator.loginValid(user);
     
         if (!valid) {
             // Validation failed, so return errors
             throw new Error(errors);
         } else {
-            //Firebase email and password login call
+            // Firebase email and password login call
             await AraDTDatabase.firebase.auth()
                 .signInWithEmailAndPassword(user.email, user.password)
                 .then((data) => {
-                    //Promise to return token for the next stage
+                    // Promise to return token for the next stage
                     return data.user.getIdToken();
                 })
                 .then((token) => {
-                    //Call suceeded, so store user token in session
+                    // Call suceeded, so store user token in session
                     request.session.token = token;
                     response.locals.loggedin = true;
                 })
                 .catch((error) => {
-                    //Throw login error from Firebase to calling method
+                    // Throw login error from Firebase to calling method
                     throw new Error(error);
                 })
         }
@@ -119,12 +119,13 @@ class UserModel{
      */
     register = async (request, response) => {
         
-        //Extract form data from request
+        // Extract form data from request
         var user = {
             email: request.body.email,
             password: request.body.password,
             passwordConfirm: request.body.passwordConfirm
         }
+
         /*
          * Check is email is valid and 
          * password is over 6 chars 
@@ -136,20 +137,20 @@ class UserModel{
             // Validation failed, so return errors
             throw new Error(errors);
         } else {
-            //Firebase email and password registration call
+            // Firebase email and password registration call
             await AraDTDatabase.firebase.auth()
                 .createUserWithEmailAndPassword(user.email, user.password)
                 .then((data) => {
-                    //Promise to return token for the next stage
+                    // Promise to return token for the next stage
                     return data.user.getIdToken();
                 })
                 .then((token) => {
-                    //Call suceeded, so store user token in session
+                    // Call suceeded, so store user token in session
                     request.session.token = token;
                     response.locals.loggedin = true;
                 })
                 .catch((error) => {
-                    //Throw error from Firebase to calling method
+                    // Throw error from Firebase to calling method
                     throw new Error(error);
                 });
         }
@@ -167,38 +168,38 @@ class UserModel{
      */
     update =  async (request, response) => {
 
-        //Extract form data from request
+        // Extract form data from request
         var upDatedUser = {
             email: request.body.email,
             displayName: request.body.displayName
         }
-        //Check is email is valid and the user has a display name
+        // Check is email is valid and the user has a display name
         var { valid, errors } = AraDTValidator.updateUserValid(upDatedUser);
 
         if (!valid) {
             // Validation failed, so return errors
             throw new Error(errors);
         } else {
-            //If form includes new avatar, upload this
+            // If form includes new avatar, upload this
             if (request.files) {
                 upDatedUser.photoURL = this.updateAvatar(request, response);
             }
-            //Firebase profile update call
+            // Firebase profile update call
             await this.currentUser.updateProfile(upDatedUser)
-            .then(function() {
-                var currentUser = AraDTDatabase.firebase.auth().currentUser;
-                if (currentUser != null) {
-                    //Update succeeded, so update UserModel, session, and local variables
-                    AraDTUserModel.setUser(currentUser);
-                    request.session.user = currentUser;
-                    response.locals.user = request.session.user;
-                    request.session.save();
-                }
-            })
-            .catch(function(error) {
-                //Throw error from Firebase to calling method
-                throw new Error(error);
-            });
+                .then(function() {
+                    var currentUser = AraDTDatabase.firebase.auth().currentUser;
+                    if (currentUser != null) {
+                        // Update succeeded, so update UserModel, session, and local variables
+                        AraDTUserModel.setUser(currentUser);
+                        request.session.user = currentUser;
+                        response.locals.user = request.session.user;
+                        request.session.save();
+                    }
+                })
+                .catch(function(error) {
+                    // Throw error from Firebase to calling method
+                    throw new Error(error);
+                });
         }
     };
     
@@ -214,20 +215,20 @@ class UserModel{
      */
     updatePassword = async (request, response) => {
 
-        //Extract form data from request
+        // Extract form data from request
         var user = {
             password: request.body.password,
             passwordConfirm: request.body.passwordConfirm
         }
         
-        //Check password is over 6 chars and matches passwordConfirm
+        // Check password is over 6 chars and matches passwordConfirm
         var { valid, errors } = AraDTValidator.updatePasswordValid(user);
 
         if (!valid) {
             // Validation failed, so return errors
             throw new Error(errors);
         } else {
-            //Firebase password update call
+            // Firebase password update call
             await this.currentUser.updatePassword(user.password)
                 .catch((error) => {
                     throw new Error(error);
@@ -243,7 +244,7 @@ class UserModel{
      * @param {Object}      request       Express request object
      * @param {Object}      response      Express response object
      * 
-     * @throws {Object}     response.redirect call
+     * @returns {Object}    response.redirect call
      */
     logout = async (request, response) => {
         request.session.errors.general = ['You have been logged out'];
@@ -265,7 +266,7 @@ class UserModel{
      * @param {Object}      request       Express request object
      * @param {Object}      response      Express response object
      * 
-     * @throws {Object}     response.render call
+     * @returns {Object}    response.render call
      */
     getAccount(request, response){
         
@@ -275,15 +276,25 @@ class UserModel{
         response.render('account');
     }
     
-    //Validates file upload
-    updateAvatar = (request, response) => {
+    /**
+     * Uses ImageUpload class to check if filetype is allowed
+     * then saves avatar to '/public/img/userid.ext'
+     * 
+     * @param {Object}      request       Express request object
+     * @param {Object}      response      Express response object
+     * 
+     * @throws {Error}
+     * 
+     * @returns {Object}    response.render call
+     */
+    updateAvatar(request, response){
         
         var { result, validExtension } = AraDTImageUpload.uploadImage(request.files.avatar, AraDTUserModel.getId());
         if (validExtension) {
             return result;
         } else {
-            response.locals.errors.avatar = [result];
-            response.render('account');
+            // Upload failed, so throw error
+            throw new Error(result);
         }
 
     };

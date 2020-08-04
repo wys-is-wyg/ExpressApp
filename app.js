@@ -34,7 +34,7 @@ AraDTApp.use(logger('dev'));
 AraDTApp.use(express.json());
 AraDTApp.use(express.urlencoded({ extended: false }));
 
-//Assign static files directory
+// Assign static files directory
 AraDTApp.use(express.static(path.join(__dirname, 'public')));
 
 /**

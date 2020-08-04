@@ -16,10 +16,10 @@ class UserController{
      */
     constructor(){
 
-        //Set current user variables before each request
+        // Set current user variables before each request
         this.setVariables();
 
-        //Add all routing middleware for user endpoints
+        // Add all routing middleware for user endpoints
         AraDTApp.post('/register', this.register);
         AraDTApp.post('/login', this.login);
         AraDTApp.get('/logout', this.logout);
@@ -34,12 +34,12 @@ class UserController{
      */
     setVariables(){
         AraDTApp.use(async function(request, response, next) {
-            //Chesk if user logged in for this session
+            // Chesk if user logged in for this session
             if (request.session.token) {
-                //We have a logged in user, so request user from Firebase
+                // We have a logged in user, so request user from Firebase
                 var currentUser = await AraDTDatabase.firebase.auth().currentUser;
                 if (currentUser != null) {
-                    //User returned, so add to session and local variables
+                    // User returned, so add to session and local variables
                     request.session.user = currentUser;
                     response.locals.user = request.session.user;
                     AraDTUserModel.setUser(currentUser);
@@ -47,7 +47,7 @@ class UserController{
                     response.locals.user = currentUser;
                 }
             }
-            //Pass on to next middleware
+            // Pass on to next middleware
             next();
         });
     }
@@ -64,11 +64,11 @@ class UserController{
      * @returns {Object}    response.redirect object
      */
     login = async (request, response) => {
-        //Try to see if form submission is valid
+        // Try to see if form submission is valid
         try{
             await AraDTUserModel.login(request, response)
                 .then(() => {
-                    //Login successful, so redirect to account
+                    // Login successful, so redirect to account
                     response.redirect('/account');
                 }).catch((error) => {
                     // Firebase login has failed, so return Firebase errors
@@ -96,11 +96,11 @@ class UserController{
      * @returns {Object}    response.redirect object
      */
     register = async (request, response) => {
-        //Try to see if form submission is valid
+        // Try to see if form submission is valid
         try{
             await AraDTUserModel.register(request, response)
                 .then(() => {
-                    //registration successful, so redirect to account
+                    // registration successful, so redirect to account
                     response.redirect('/account');
                 }).catch((error) => {
                     // Firebase registration has failed, so return Firebase errors
