@@ -1,10 +1,12 @@
 var UserController = require('../controllers/UserController');
 var ChannelController = require('../controllers/ChannelController');
+var ChannelModel = require('../models/ChannelModel');
 var createError = require('http-errors');
 
 class Router{
 
     constructor(){
+        this.channelModel = new ChannelModel();
         this.setVariables();
         this.addBaseRoutes();
         this.addControllers();

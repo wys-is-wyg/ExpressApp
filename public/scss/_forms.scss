@@ -8,7 +8,6 @@
     color: #fff;
     -webkit-box-shadow: inset 0px 3px 1px rgba(0, 0, 0, 0.1);
     box-shadow: inset 0px 3px 1px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
 }
 .form-group{
     .custom-file-label,
@@ -26,6 +25,8 @@
     .custom-file-label{
         line-height: 1.8;
         padding: 15px 30px;
+        pointer-events: none;
+        cursor:pointer;
     }
     .custom-file-label::after {
         color: #fff;
@@ -35,6 +36,7 @@
         height: 60px;
         padding: 15px;
         line-height: 1.8;
+        pointer-events: auto;  
         cursor: pointer;
     }
     &.no-submit{

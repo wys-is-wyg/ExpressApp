@@ -50,6 +50,11 @@ var passwordErrors = ("password" in  locals.errors) ? locals.errors.password : f
 				</form>
 				<p>&nbsp;</p>
 				<h2>Your Password</h2>
+				<% if (passwordErrors) { %>
+					<% passwordErrors.forEach(function(error) { %>
+						<p><div class="alert alert-primary" role="alert"><%= error %></div></p>
+					<% }) %>
+				<% } %>
 				<hr>
 				<form action="/password" method="post">
 					<div class="form-group">
@@ -63,11 +68,6 @@ var passwordErrors = ("password" in  locals.errors) ? locals.errors.password : f
 					<div class="form-group submit">
 						<button id="update" type="submit" class="btn btn-primary">Change Your Password</button>
 					</div>
-					<% if (passwordErrors) { %>
-						<% passwordErrors.forEach(function(error) { %>
-							<p><div class="alert alert-primary" role="alert"><%= error %></div></p>
-						<% }) %>
-					<% } %>
 				</form>
 			</main>
 		</div>

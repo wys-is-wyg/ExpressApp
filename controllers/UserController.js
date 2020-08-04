@@ -11,9 +11,13 @@ class UserController{
     }
 
     setVariables(){
-        AraDTApp.use(function(request, response, next) {
+        AraDTApp.use(async function(request, response, next) {
             if (request.session) {
                 if (request.session.token) {
+                    var currentUser = await AraDTDatabase.firebase.auth().currentUser;
+                    if (currentUser != null) {
+                        AraDTUserModel.setUser(currentUser);
+                    }
                     response.locals.loggedin = true;
                 }
                 if (request.session.user) {
@@ -24,171 +28,102 @@ class UserController{
         });
     }
 
-    login = async (request, response, next) => {
-        var user = {
-            email: request.body.email,
-            password: request.body.password
-        }
-        var { valid, errors } = AraDTValidator.loginValid(user);
-    
-        if (!valid) {
-            request.session.errors.login = errors;
-            response.redirect('/');
-        } else {
-            await AraDTDatabase.firebase.auth()
-                .signInWithEmailAndPassword(user.email, user.password)
-                .then((data) => {
-                    return data.user.getIdToken();
-                })
-                .then((token) => {
-                    var user = AraDTDatabase.firebase.auth().currentUser;
-                    if (user != null) {
-                        request.session.user = user;
-                    }
-                    request.session.token = token;
-                    response.locals.loggedin = true;
+    login = async (request, response) => {
+        try{
+            await AraDTUserModel.login(request, response)
+                .then(() => {
                     response.redirect('/account');
-                })
-                .catch((error) => {
+                }).catch((error) => {
                     request.session.errors.login = [error.message];
                     response.redirect('/');
-                })
+                });
+
+        } catch(errors) {
+            request.session.errors.login = errors;
+            response.redirect('/');
         }
     };
 
-    register = async (request, response, next) => {
-        
-        var user = {
-            email: request.body.email,
-            password: request.body.password,
-            passwordConfirm: request.body.passwordConfirm
-        }
-        var { valid, errors } = AraDTValidator.registerValid(user);
-
-        if (!valid) {
-            request.session.errors.register = errors;
-            response.redirect('/');
-        } else {
-            await AraDTDatabase.firebase.auth()
-                .createUserWithEmailAndPassword(user.email, user.password)
-                .then((data) => {
-                    return data.user.getIdToken();
-                })
-                .then((token) => {
-                    var user = AraDTDatabase.firebase.auth().currentUser;
-                    if (user != null) {
-                        request.session.user = user;
-                    }
-                    request.session.token = token;
-                    response.locals.loggedin = true;
+    register = async (request, response) => {
+        try{
+            await AraDTUserModel.register(request, response)
+                .then(() => {
                     response.redirect('/account');
-                })
-                .catch((error) => {
+                }).catch((error) => {
                     request.session.errors.register = [error.message];
                     response.redirect('/');
                 });
+
+        } catch(errors) {
+            request.session.errors.register = errors;
+            response.redirect('/');
         }
     };
 
-    logout = async (request, response, next) => {
-        request.session.errors.general = ['You have been logged out due to inactivity'];
+    logout = async (request, response) => {
+        request.session.errors.general = ['You have been logged out'];
         response.locals.loggedin = false;
         request.session.destroy();
         await AraDTDatabase.firebase.auth().signOut().then(function() {
-            response.redirect('/');
-          }).catch(function(error) {
-            response.redirect('/');
-          });
+                response.redirect('/');
+            }).catch(function(error) {
+                response.redirect('/');
+            });
     }
 
-    getAccount(request, response, next) {
+    updateAccount =  async (request, response) => {
+
+        var currentUser = AraDTUserModel.getCurrentUser();
+        if (currentUser) {
+            try{
+                await AraDTUserModel.update(request, response)
+                    .then(() => {
+                        response.locals.errors.profile = ['Your details have been updated'];
+                        response.render('account');
+                    }).catch((error) => {
+                        response.locals.errors.profile = [error.message];
+                        response.render('account');
+                    });
+            } catch(errors) {
+                response.locals.errors.profile = errors;
+                response.render('account');
+            }
+        } else {
+            this.logout(request, response);
+        }
+
+    };
+    
+    updatePassword = async (request, response) => {
+
+        var currentUser = AraDTUserModel.getCurrentUser();
+        if (currentUser) {
+            try{
+                await AraDTUserModel.updatePassword(request, response)
+                    .then(() => {
+                        response.locals.errors.password = ['Your password has been updated'];
+                        response.render('account');
+                    }).catch((error) => {
+                        response.locals.errors.password = [error.message];
+                        response.render('account');
+                    });
+            } catch(errors) {
+                response.locals.errors.password = errors;
+                response.render('account');
+            }
+        } else {
+            this.logout(request, response);
+        }
+
+    };
+
+    getAccount(request, response){
         
         if (!request.session.token) {
             response.redirect('/');
         }
         response.render('account');
     }
-
-    updateAccount =  async (request, response, next) => {
-
-        var currentUser = await AraDTDatabase.firebase.auth().currentUser;
-        if (currentUser != null) {
-            var upDatedUser = {
-                email: request.body.email,
-                displayName: request.body.displayName
-            }
-            var { valid, errors } = AraDTValidator.updateUserValid(upDatedUser);
-
-            if (!valid) {
-                response.locals.errors.profile = errors;
-                response.render('account');
-            } else {
-                if (request.files) {
-                    upDatedUser.photoURL = this.updateAvatar(request, response, currentUser);
-                }
-                await currentUser.updateProfile(upDatedUser)
-                .then(function() {
-                    var currentUser = AraDTDatabase.firebase.auth().currentUser;
-                    if (currentUser != null) {
-                        request.session.user = currentUser;
-                    }
-                    response.locals.user = request.session.user;
-                    response.locals.errors.profile = ['Your details have been updated.'];
-                    request.session.save();
-                    response.render('account');
-                })
-                .catch(function(error) {
-                    response.locals.errors.profile = [error.message];
-                    response.render('account');
-                });
-            }
-        } else {
-            this.logout(request, response, next);
-        }
-
-    };
-    
-    updateAvatar = (request, response, currentUser) => {
-        
-        var { result, validExtension } = AraDTImageUpload.uploadImage(request.files.avatar, currentUser.uid);
-        if (validExtension) {
-            return result;
-        } else {
-            response.locals.errors.avatar = [result];
-            response.render('account');
-        }
-
-    };
-    
-    updatePassword = async (request, response, next) => {
-
-
-        var currentUser = await AraDTDatabase.firebase.auth().currentUser;
-        if (currentUser != null) {
-            var user = {
-                password: request.body.password,
-                passwordConfirm: request.body.passwordConfirm
-            }
-            
-            var { valid, errors } = AraDTValidator.updatePasswordValid(user);
-
-            if (!valid) {
-                request.session.errors.password = errors;
-                response.redirect('/account');
-            } else {
-                await currentUser.updatePassword(user.password).then(function() {
-                    request.session.errors.password = ['Your password has been updated.'];
-                    response.redirect('/account');
-                }).catch(function(error) {
-                    request.session.errors.password = [error.message];
-                    response.redirect('/account');
-                });
-            }        
-        } else {
-            this.logout(request, response, next);
-        }
-
-    };
 
 }
 module.exports = UserController;
