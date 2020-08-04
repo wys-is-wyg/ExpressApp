@@ -1,5 +1,22 @@
+/**
+ * Data validation class
+ * 
+ * Processes form data according to business requirements,
+ * or Firebase data requirements
+ *
+ * @class
+ *
+ */
 class Validator{
 
+    /**
+     * Checks that the form has an email
+     * and password over 6 chars
+     * 
+     * @param {Object}      data        Form submmisssion data
+     * 
+     * @returns {Object}    valid boolean and error array
+     */
     loginValid(data) {
         let errors = [];
 
@@ -16,6 +33,15 @@ class Validator{
         };
     }
 
+    /**
+     * Checks that the form has an email
+     * and password over 6 chars and 
+     * matches confirmation password
+     * 
+     * @param {Object}      data        Form submmisssion data
+     * 
+     * @returns {Object}    valid boolean and error array
+     */
     registerValid(data) {
         let errors = [];
         if (this.isEmpty(data.email)) errors.push('You need to add an email');
@@ -34,6 +60,14 @@ class Validator{
 
     }
 
+    /**
+     * Checks that the form has an email
+     * and a display name 
+     * 
+     * @param {Object}      data        Form submmisssion data
+     * 
+     * @returns {Object}    valid boolean and error array
+     */
     updateUserValid(data) {
         let errors = [];
 
@@ -47,6 +81,14 @@ class Validator{
 
     }
 
+    /**
+     * Checks that the form has a password over 6 chars and 
+     * matches confirmation password
+     * 
+     * @param {Object}      data        Form submmisssion data
+     * 
+     * @returns {Object}    valid boolean and error array
+     */
     updatePasswordValid(data) {
         let errors = [];
 
@@ -67,17 +109,26 @@ class Validator{
 
     }
 
+    /**
+     * Checks email conforms to email requirements
+     * 
+     * @param {string}      email
+     * 
+     * @returns {boolean}
+     */
     isEmail(email){
         const emailRegEx = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         if (email.match(emailRegEx)) return true;
         else return false;
     }
 
-    isEmpty(string) {
-        if (string.trim() === '') return true;
-        else return false;
-    };
-
+    /**
+     * Transforms string with spaces and caps to kebab case
+     * 
+     * @param {string}
+     * 
+     * @returns {string}
+     */
     makeSlug(str) {
         str = str.replace(/^\s+|\s+$/g, ''); // trim
         str = str.toLowerCase();
@@ -96,7 +147,26 @@ class Validator{
         return str;
     }
 
-    isEmpty(obj) {
+    /**
+     * Checks if a required field has length
+     * 
+     * @param {string}
+     * 
+     * @returns {boolean}
+     */
+    isEmpty(string) {
+        if (string.trim() === '') return true;
+        else return false;
+    };
+
+    /**
+     * Checks if an object has any properties
+     * 
+     * @param {Object}
+     * 
+     * @returns {boolean}
+     */
+    isEmptyObj(obj) {
         return Object.keys(obj).length === 0 && obj.constructor === Object;
     }
 

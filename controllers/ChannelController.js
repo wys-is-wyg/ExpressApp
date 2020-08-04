@@ -1,3 +1,11 @@
+/**
+ * ChannelController Class.
+ * 
+ * Adds routing middleware for all channel functionality.
+ *
+ * @class ChannelController
+ *
+ */
 class ChannelController{
 
     constructor(){

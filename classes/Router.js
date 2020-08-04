@@ -1,12 +1,16 @@
 var UserController = require('../controllers/UserController');
 var ChannelController = require('../controllers/ChannelController');
-var ChannelModel = require('../models/ChannelModel');
 var createError = require('http-errors');
 
+/**
+ * Router class to add controller routes to Express
+ *
+ * @class
+ *
+ */
 class Router{
 
     constructor(){
-        this.channelModel = new ChannelModel();
         this.setVariables();
         this.addBaseRoutes();
         this.addControllers();
@@ -14,6 +18,10 @@ class Router{
         this.handleErrors();
     }
 
+    /**
+     * Assigns middleware to add session errors
+     * to local values
+     */
     setVariables(){
         AraDTApp.use(function(request, response, next) {
             if (request.session.errors) {
@@ -25,25 +33,37 @@ class Router{
         });
     }
 
+    /**
+     * Adds simple routes that only require a view, 
+     * no controllers or models
+     */
+    addBaseRoutes() {
+        AraDTApp.get('/', this.index);
+    }
+
+
+    /**
+     * Add controllers for key models, 
+     * e.g. Users, Channels, Messages
+     */
     addControllers() {
         var userController = new UserController();
         var channelController = new ChannelController();
     }
 
-    addBaseRoutes() {
-        AraDTApp.get('/', this.index);
-    }
-
+    //Renders home page ./views/index.ejs
     index(request, response, next) {
         response.render('index');
     }
 
+    //Adds middleware to add HTTP Error to 404 requests
     handle404s() {
-        AraDTApp.use(function(req, res, next) {
+        AraDTApp.use(function(request, response, next) {
             next(createError(404));
         });
     }
 
+    //Adds middleware to handle server errors
     handleErrors() {
         
         // error handler
