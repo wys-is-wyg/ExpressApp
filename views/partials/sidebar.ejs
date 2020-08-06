@@ -1,56 +1,20 @@
+<%  var channels = ("channels" in  locals) ? locals.channels : false %>
 
-                <ul class="list-group">
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <h4>Channels <i class="fas fa-address-book float-right"></i></h4>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        Cras justo odio
-                        <span class="badge badge-primary badge-pill" data-toggle="tooltip" data-placement="top" title="14 new messages...">14</span>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center active">
-                        Dapibus ac facilisis in
-                        <span class="badge badge-primary badge-pill" data-toggle="tooltip" data-placement="top" title="2 new messages...">2</span>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        Morbi leo risus
-                        <span class="badge badge-primary badge-pill" data-toggle="tooltip" data-placement="top" title="1 new message...">1</span>
-                    </li>
-                </ul>
-                <div class="list-group">
-                    <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
-                        <h4>Direct Messages</h4>
-                    </a>
-                    <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h5 class="mb-1">List group item heading</h5>
-                            <small class="text-muted">3 days ago</small>
-                        </div>
-                        <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
-                        <small class="text-muted">Donec id elit non mi porta.</small>
-                    </a>
-                    <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h5 class="mb-1">List group item heading</h5>
-                            <small class="text-muted">3 days ago</small>
-                        </div>
-                        <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
-                        <small class="text-muted">Donec id elit non mi porta.</small>
-                    </a>
+<div id="all-channels" class="user-channels">
+    <% if (channels) { %>
+        <ul class="list-group">
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <h4>All Channels <i class="fas fas fa-user float-right"></i></h4>
+            </li>
+        <% channels.forEach(function(channel) { %>
+            <li class="list-group-item channel-list-item d-flex justify-content-between align-items-center">
+                <div class="avatar-window">
+                    <img src="<%= channel.image %>" alt="<%= channel.name %>">
                 </div>
-                <ul class="list-group">
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <h4>Users <i class="fas fa-user float-right"></i></h4>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center active">
-                        Cras justo odio
-                        <span class="badge badge-primary badge-pill" data-toggle="tooltip" data-placement="top" title="14 new messages...">14</span>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        Dapibus ac facilisis in
-                        <span class="badge badge-primary badge-pill" data-toggle="tooltip" data-placement="top" title="2" new messages...">2</span>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        Morbi leo risus
-                        <span class="badge badge-primary badge-pill" data-toggle="tooltip" data-placement="top" title="1 new message...">1</span>
-                    </li>
-                </ul>
+                <a href="/channel/<%= channel.id %>/"><%= channel.name %></a>
+                <span class="badge badge-primary badge-pill" data-placement="top" title="<%= channel.users.length %> users..."><%= channel.users.length %></span>
+            </li>
+        <% }) %>
+        </ul>
+    <% }  %>
+</div>

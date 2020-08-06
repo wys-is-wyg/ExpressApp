@@ -9,6 +9,7 @@
 class ChannelController{
 
     constructor(){
+       // this.setVariables();
         AraDTApp.get('/channels', this.getUserChannels);
         AraDTApp.post('/channels/add', this.addChannel);
         AraDTApp.post('/channels/update/:channelId', this.updateChannel);
@@ -16,8 +17,24 @@ class ChannelController{
         AraDTApp.get('/channel/:channelId', this.showChannel);
         AraDTApp.get('/channels/edit/:channelId', this.editChannel);
     }
+    
+    /**
+     * Assigns middleware to add Firebase.auth().currentUser to
+     * UserModel, request.session, and response.locals variables
+     */
+    setVariables(){
+        AraDTApp.use(async function(request, response, next) {
+            // Chesk if user logged in for this session
+            if (!request.session.token) {
+                response.redirect('/');
+            } else {
+                next();
+            }
+        });
+    }
 
     showChannel = async (request, response, next) => {
+        next();
     }
 
     getUserChannels = async (request, response, next) => {

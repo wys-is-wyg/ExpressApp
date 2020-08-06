@@ -6,7 +6,7 @@ var subscribedChannels = ("subscribedChannels" in  locals) ? locals.subscribedCh
                 <% if (ownedChannels) { %>
                     <ul class="list-group">
                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <h4>Your Channels</h4>
+                            <h4>Your Channels <i class="fas fas fa-user float-right"></i></h4>
                         </li>
                     <% ownedChannels.forEach(function(channel) { %>
                         <li class="list-group-item channel-list-item d-flex justify-content-between align-items-center">
@@ -16,7 +16,7 @@ var subscribedChannels = ("subscribedChannels" in  locals) ? locals.subscribedCh
                             <a href="/channel/<%= channel.slug %>/"><%= channel.name %></a>
                             <a href="/channels/edit/<%= channel.id %>/"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
                             <a href="/channels/delete/<%= channel.id %>/"><i class="fa fa-trash" aria-hidden="true"></i></a>
-                            <span class="badge badge-primary badge-pill" data-placement="top" title="14 new messages...">14</span>
+                            <span class="badge badge-primary badge-pill" data-placement="top" title="<%= channel.users.length %> users..."><%= channel.users.length %></span>
                         </li>
                     <% }) %>
                     </ul>
@@ -29,7 +29,7 @@ var subscribedChannels = ("subscribedChannels" in  locals) ? locals.subscribedCh
                 <% if (subscribedChannels) { %>
                     <ul class="list-group">
                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <h4>Subscribed Channels</h4>
+                            <h4>Subscribed Channels <i class="fas fas fa-user float-right"></i></h4>
                         </li>
                     <% subscribedChannels.forEach(function(channel) { %>
                         <li class="list-group-item channel-list-item d-flex justify-content-between align-items-center">
@@ -38,7 +38,7 @@ var subscribedChannels = ("subscribedChannels" in  locals) ? locals.subscribedCh
                             </div>
                             <a href="/channel/<%= channel.slug %>/"><%= channel.name %></a>
                             <a href="#/"><i class="fas fa-sign-out-alt"></i></a>
-                            <span class="badge badge-primary badge-pill" data-placement="top" title="14 new messages...">14</span>
+                            <span class="badge badge-primary badge-pill" data-placement="top" title="<%= channel.users.length %> users..."><%= channel.users.length %></span>
                         </li>
                     <% }) %>
                     </ul>

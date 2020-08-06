@@ -20,12 +20,21 @@ class UserController{
         this.setVariables();
 
         // Add all routing middleware for user endpoints
+        AraDTApp.get('/register', this.signup);
         AraDTApp.post('/register', this.register);
         AraDTApp.post('/login', this.login);
         AraDTApp.get('/logout', this.logout);
         AraDTApp.get('/account', this.getAccount);
         AraDTApp.post('/account', this.updateAccount);
         AraDTApp.post('/password', this.updatePassword);
+    }
+    
+    //fetches all channels, and orders by number of users, then renders index.ejs
+    signup = async (request, response) => {
+        var channels = await AraDTChannelModel.getChannels();
+        channels.sort((a, b) => (a.users.length < b.users.length) ? 1 : -1);
+        response.locals.channels = channels;
+        response.render('register');
     }
 
     /**
@@ -46,8 +55,18 @@ class UserController{
                     response.locals.loggedin = true;
                     response.locals.user = currentUser;
                 }
+            } else {
+                /**
+                 * Redirect all requests from logged out users 
+                 * except index, register and login
+                 */
+                var query = request.originalUrl;
+                if (query != '/' 
+                    && query != '/register'
+                    && query != '/login') {
+                    return response.redirect('/');
+                }
             }
-            // Pass on to next middleware
             next();
         });
     }
@@ -55,7 +74,7 @@ class UserController{
     /**
      * Asynchronous function that handles post form submission to '/login'
      * On success, redirects to '/account'
-     * Onfailure, redirects to '/' with error message
+     * On failure, redirects to '/' with error message
      * Requires the following POST form name fields:
      * 
      * @param {string}      request.body.email          email form field
@@ -105,12 +124,12 @@ class UserController{
                 }).catch((error) => {
                     // Firebase registration has failed, so return Firebase errors
                     request.session.errors.register = [error.message];
-                    response.redirect('/');
+                    response.redirect('/register');
                 });
         } catch(errors) {
             // Form has failed validation, so return errors
             request.session.errors.register = errors;
-            response.redirect('/');
+            response.redirect('/register');
         }
     };
 

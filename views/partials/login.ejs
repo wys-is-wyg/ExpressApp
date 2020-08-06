@@ -78,12 +78,15 @@
 
 <% if (locals.errors) { %>
     <% if (locals.errors.login) { %>
+        <!-- 
         <script>
             $('#login').modal({
                 show: true
             }); 
         </script>
+        -->
     <% } else if (locals.errors.register) { %>
+        <!-- 
         <script>
             $('#login').on('show.bs.modal', function (e) {
                 $('#register-form').tab('show');
@@ -95,5 +98,6 @@
                 show: true
             }); 
         </script>
+        -->
     <% } %>
 <% } %>

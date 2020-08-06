@@ -190,6 +190,8 @@ class ChannelModel{
                 });
                 if (channels.length == 0) {
                     channels = false;
+                } else {
+                    channels.sort((a, b) => (a.users.length < b.users.length) ? 1 : -1);
                 }
             })
             .catch((error) => {
@@ -212,6 +214,30 @@ class ChannelModel{
                 });
                 if (channels.length == 0) {
                     channels = false;
+                } else {
+                    channels.sort((a, b) => (a.users.length < b.users.length) ? 1 : -1);
+                }
+            })
+            .catch((error) => {
+                console.log('Error fetching channel data:' + error.message);
+            });
+        return channels;
+    }
+
+    getChannels = async () => {
+
+        var channels = [];
+        await AraDTDatabase.storage.collection('channels')
+            .orderBy('createdAt', 'desc')
+            .get()
+            .then((data) => {
+                data.forEach((datum) => {
+                    channels.push(this.getChannelData(datum));
+                });
+                if (channels.length == 0) {
+                    channels = false;
+                } else {
+                    channels.sort((a, b) => (a.users.length < b.users.length) ? 1 : -1);
                 }
             })
             .catch((error) => {

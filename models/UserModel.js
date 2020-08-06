@@ -299,5 +299,26 @@ class UserModel{
 
     };
 
+    getUsers = async() => {
+        var users = [];
+        await AraDTDatabase.firebaseAdmin.auth().listUsers()
+            .then((data) => {
+                data.users.forEach((datum) => {
+                    users.push({
+                        id: datum.uid,
+                        name: datum.displayName,
+                        image: datum.photoURL,
+                    });
+                });
+                if (users.length == 0) {
+                    users = false;
+                }
+            })
+            .catch(function(error) {
+                console.log('Error fetching user data:', error);
+            });
+        return users;
+    }
+
 }
 module.exports = UserModel;

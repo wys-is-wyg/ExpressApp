@@ -1,6 +1,7 @@
 var UserController = require('../controllers/UserController');
 var ChannelController = require('../controllers/ChannelController');
 var createError = require('http-errors');
+const { response } = require('express');
 
 /**
  * Router class to add controller routes to Express
@@ -12,8 +13,8 @@ class Router{
 
     constructor(){
         this.setVariables();
-        this.addBaseRoutes();
         this.addControllers();
+        this.addBaseRoutes();
         this.handle404s();
         this.handleErrors();
     }
@@ -51,8 +52,11 @@ class Router{
         var channelController = new ChannelController();
     }
 
-    // Renders home page ./views/index.ejs
-    index(request, response, next) {
+    //Fetches all channels and renders index page
+    index = async (request, response, next) => {
+        var channels = await AraDTChannelModel.getChannels();
+        channels.sort((a, b) => (a.users.length < b.users.length) ? 1 : -1);
+        response.locals.channels = channels;
         response.render('index');
     }
 
