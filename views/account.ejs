@@ -1,8 +1,6 @@
 <%- include('partials/header'); %> 
 <% 
-var userName = ("displayName" in  locals.user) ? locals.user.displayName : false;
-var userEmail = ("email" in  locals.user) ? locals.user.email : false;
-var avatar = ("photoURL" in  locals.user) ? locals.user.photoURL : 'https://via.placeholder.com/300x300?text=???';
+var avatar = (locals.user.photoURL && locals.user.photoURL.length > 0) ? locals.user.photoURL : 'https://via.placeholder.com/300x300?text=???';
 var profileErrors = ("profile" in  locals.errors) ? locals.errors.profile : false;
 var passwordErrors = ("password" in  locals.errors) ? locals.errors.password : false;
 %>
@@ -24,11 +22,11 @@ var passwordErrors = ("password" in  locals.errors) ? locals.errors.password : f
 				<form action="/account" method="post" enctype="multipart/form-data">
 					<div class="form-group">
 						<label class="control-label">Display Name</label>
-						<input id="update-display-name" type="text" class="form-control" name="displayName" placeholder="Display Name" value="<%= userName %>">
+						<input id="update-display-name" type="text" class="form-control" name="displayName" placeholder="Display Name" value="<%= locals.user.displayName %>">
 					</div>
 					<div class="form-group">
 						<label class="control-label">Email Address</label>
-						<input id="update-email" type="email" class="form-control" name="email" placeholder="Email" value="<%= userEmail %>">
+						<input id="update-email" type="email" class="form-control" name="email" placeholder="Email" value="<%= locals.user.email %>">
 					</div>
 					<div id="avatar" class="col-md-3 col-6 p-0">
 						<div class="avatar-window">

@@ -9,7 +9,7 @@
 class ChannelController{
 
     constructor(){
-       // this.setVariables();
+        this.setVariables();
         AraDTApp.get('/channels', this.getUserChannels);
         AraDTApp.post('/channels/add', this.addChannel);
         AraDTApp.post('/channels/update/:channelId', this.updateChannel);
@@ -19,17 +19,12 @@ class ChannelController{
     }
     
     /**
-     * Assigns middleware to add Firebase.auth().currentUser to
-     * UserModel, request.session, and response.locals variables
+     * 
      */
     setVariables(){
         AraDTApp.use(async function(request, response, next) {
-            // Chesk if user logged in for this session
-            if (!request.session.token) {
-                response.redirect('/');
-            } else {
-                next();
-            }
+            response.locals.channels = {};
+            next();
         });
     }
 
@@ -45,9 +40,9 @@ class ChannelController{
 
         await AraDTChannelModel.getUserChannels()
             .then((data) => {
-                response.locals.users = data.users;
-                response.locals.ownedChannels = data.ownedChannels;
-                response.locals.subscribedChannels = data.subscribedChannels;
+                response.locals.channels.users = data.users;
+                response.locals.channels.ownedChannels = data.ownedChannels;
+                response.locals.channels.subscribedChannels = data.subscribedChannels;
                 response.render('channels');
             })
             .catch(() => {
@@ -91,11 +86,11 @@ class ChannelController{
         var subscribedChannels = await AraDTChannelModel.getSubscribedChannels();
         var ownedChannels = await AraDTChannelModel.getOwnedChannels();
         var channel = await AraDTChannelModel.editChannel(channelId);
-        response.locals.channelToEdit = channel.channelToEdit;
-        response.locals.channelUsers = channel.channelUsers;
-        response.locals.otherUsers = channel.otherUsers;
-        response.locals.ownedChannels = ownedChannels;
-        response.locals.subscribedChannels = subscribedChannels;
+        response.locals.channels.channelToEdit = channel.channelToEdit;
+        response.locals.channels.channelUsers = channel.channelUsers;
+        response.locals.channels.otherUsers = channel.otherUsers;
+        response.locals.channels.ownedChannels = ownedChannels;
+        response.locals.channels.subscribedChannels = subscribedChannels;
         response.render('channel-edit');
     };
 
