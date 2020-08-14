@@ -1,9 +1,9 @@
 <%- include('partials/header'); %> 
 <% 
-var channelUsers = locals.channelUsers
-var otherUsers = locals.otherUsers
-var channelToEdit = locals.channelToEdit
-var editChannelErrors = ("editChannelErrors" in  locals.errors) ? locals.errors.editChannelErrors : false 
+var inUsers = locals.channels.inUsers
+var outUsers = locals.channels.outUsers
+var editChannel = locals.channels.editChannel
+var editErrors = ("edit" in  locals.errors.channels) ? locals.errors.channels.edit : false 
 %>
 			<div id="main">
 				<div class="container-fluid">
@@ -14,15 +14,15 @@ var editChannelErrors = ("editChannelErrors" in  locals.errors) ? locals.errors.
 						<main role="main" class="col-md-8 col-sm-6">
 							<h2>Edit Channel</h2>
 							<hr>
-							<% if (editChannelErrors) { %>
-								<% editChannelErrors.forEach(function(error) { %>
+							<% if (editErrors) { %>
+								<% editErrors.forEach(function(error) { %>
 									<p><div class="alert alert-primary" role="alert"><%= error %></div></p>
 								<% }) %>
 							<% } %>
-							<form id="channel-create-form" action="/channels/update/<%= channelToEdit.id %>" method="post" enctype="multipart/form-data">
+							<form id="channel-create-form" action="/channels/edit/<%= editChannel.id %>" method="post" enctype="multipart/form-data">
 								<div class="form-group">
 									<label class="control-label">Display Name</label>
-									<input id="update-display-name" type="text" class="form-control" name="name" placeholder="Display Name" value="<%= channelToEdit.name %>">
+									<input id="update-display-name" type="text" class="form-control" name="name" placeholder="Display Name" value="<%= editChannel.name %>">
 								</div>
 								<div class="form-group">
 									<label class="check-input-group" for="public">
@@ -31,11 +31,11 @@ var editChannelErrors = ("editChannelErrors" in  locals.errors) ? locals.errors.
 									</label>
 									<span class="align-label-middle">Public Channel</span>
 								</div>
-								<% if (channelToEdit.image) { %>
+								<% if (editChannel.image) { %>
 								<div id="avatar" class="col-md-3 col-6 p-0">
 									<div class="avatar-window">
-										<img src="<%= channelToEdit.image %>" alt="Your Profile Image">
-										<input type="hidden" name="current-avatar" value="<%= channelToEdit.image %>">
+										<img src="<%= editChannel.image %>" alt="Your Profile Image">
+										<input type="hidden" name="current-avatar" value="<%= editChannel.image %>">
 									</div>
 								</div>
 								<% } %>
@@ -53,8 +53,8 @@ var editChannelErrors = ("editChannelErrors" in  locals.errors) ? locals.errors.
 										<h4>Add Users</h4>
 										<div id="user-window">
 											<div id="user-window-channel">
-												<% if (channelUsers) { %>
-													<% channelUsers.forEach(function(user) { %>
+												<% if (inUsers) { %>
+													<% inUsers.forEach(function(user) { %>
 														<div class="user-check">
 															<label class="user-check-input-group" for="user<%= user.id %>">
 																<input class="user-check-input" id="user<%= user.id %>" type="checkbox" name="users" value="<%= user.id %>" checked="checked">
@@ -67,8 +67,8 @@ var editChannelErrors = ("editChannelErrors" in  locals.errors) ? locals.errors.
 														</div>
 													<% }) %>
 												<% } %>
-												<% if (otherUsers) { %>
-													<% otherUsers.forEach(function(user) { %>
+												<% if (outUsers) { %>
+													<% outUsers.forEach(function(user) { %>
 														<div class="user-check">
 															<label class="user-check-input-group" for="user<%= user.id %>">
 																<input class="user-check-input" id="user<%= user.id %>" type="checkbox" name="users" value="<%= user.id %>">

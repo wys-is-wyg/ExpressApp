@@ -10,12 +10,12 @@ class ChannelController{
 
     constructor(){
         this.setVariables();
-        AraDTApp.get('/channels', this.getUserChannels);
+        AraDTApp.get('/channels', this.fetchChannels);
         AraDTApp.post('/channels/add', this.addChannel);
-        AraDTApp.post('/channels/update/:channelId', this.updateChannel);
         AraDTApp.post('/channels/delete/:channelId', this.deleteChannel);
         AraDTApp.get('/channel/:channelId', this.showChannel);
         AraDTApp.get('/channels/edit/:channelId', this.editChannel);
+        AraDTApp.post('/channels/edit/:channelId', this.updateChannel);
     }
     
     /**
@@ -24,6 +24,15 @@ class ChannelController{
     setVariables(){
         AraDTApp.use(async function(request, response, next) {
             response.locals.channels = {};
+            if (!response.locals.errors){
+                response.locals.errors = {};
+            }
+            if (!request.session.errors.channels){
+                request.session.errors.channels = {};
+            }
+            if (!response.locals.errors.channels){
+                response.locals.errors.channels = {};
+            }
             next();
         });
     }
@@ -32,23 +41,17 @@ class ChannelController{
         next();
     }
 
-    getUserChannels = async (request, response, next) => {
+    fetchChannels = async (request, response, next) => {
         
         if (!request.session.token) {
            response.redirect('/');
         }
-
-        await AraDTChannelModel.getUserChannels()
-            .then((data) => {
-                response.locals.channels.users = data.users;
-                response.locals.channels.ownedChannels = data.ownedChannels;
-                response.locals.channels.subscribedChannels = data.subscribedChannels;
-                response.render('channels');
-            })
-            .catch(() => {
-                request.session.errors.channel = ['We were unable to locate your channels'];
-                response.render('channels');
-            });
+        try{
+            await this.fetchChannelData(request, response, next);
+        } catch(errors) {
+            response.locals.errors.channels.general = errors;
+        }
+        response.render('channels');
     };
 
     addChannel = async (request, response, next) => {
@@ -57,19 +60,22 @@ class ChannelController{
             response.redirect('/');
         }
         if (AraDTValidator.isEmpty(request.body.name)) {
-            request.session.errors.general = ['You need to add a channel name'];
+            request.session.errors.channels.general = ['You need to add a channel name'];
             response.redirect('/channels');
         }
-    
-        await AraDTChannelModel.addChannel(request, response)
-            .then(() => {
-                request.session.errors.addChannel = ['Your channel has been created'];
-                response.redirect('/channels');
-            })
-            .catch((error) => {
-                request.session.errors.addChannel = [error.message];
-                response.redirect('/channels');
-            });
+        try{
+            await AraDTChannelModel.addChannel(request, response)
+                .then(() => {
+                    request.session.errors.channels.general = ['Your channel has been created'];
+                    response.redirect('/channels');
+                })
+                .catch((error) => {
+                    request.session.errors.channels.general = [error.message];
+                    response.redirect('/channels');
+                });
+        } catch(errors) {
+            response.locals.errors.channels.general = errors;
+        }
     };
 
     editChannel = async (request, response, next) => {
@@ -80,17 +86,14 @@ class ChannelController{
         var channelId = request.params.channelId;
         
         if (!channelId) {
-            request.session.errors.general = ['You need to specifcy a channel to edit'];
+            request.session.errors.channels.general = ['You need to specify a channel to edit'];
             response.redirect('/channels');
         }
-        var subscribedChannels = await AraDTChannelModel.getSubscribedChannels();
-        var ownedChannels = await AraDTChannelModel.getOwnedChannels();
-        var channel = await AraDTChannelModel.editChannel(channelId);
-        response.locals.channels.channelToEdit = channel.channelToEdit;
-        response.locals.channels.channelUsers = channel.channelUsers;
-        response.locals.channels.otherUsers = channel.otherUsers;
-        response.locals.channels.ownedChannels = ownedChannels;
-        response.locals.channels.subscribedChannels = subscribedChannels;
+        try{
+            await this.fetchChannelData(request, response, next);
+        } catch(errors) {
+            response.locals.errors.channels = errors;
+        }
         response.render('channel-edit');
     };
 
@@ -99,17 +102,36 @@ class ChannelController{
         if (!request.session.token) {
             response.redirect('/');
         }
-        var channelId = request.params.channelId;
 
-        await AraDTChannelModel.updateChannel(request, response)
-            .then(()=>{
-                request.session.errors.editChannelErrors = ['Your channel has been updated'];
-                response.redirect('/channels/edit/' + channelId);
-            })
-            .catch((error) => {
-                request.session.errors.editChannelErrors = [error.message];
-                response.redirect('/channels/edit/' + channelId);
-            });
+        var channelId = request.params.channelId;
+        var errors = response.locals.errors.channels;
+        
+        if (!channelId) {
+            errors.general = ['You need to specify a channel to edit'];
+            response.redirect('/channels');
+        }
+
+        if (AraDTValidator.isEmpty(request.body.name)) {
+            errors.edit = ['You need to specify a name'];
+        }
+
+        try{
+            await AraDTChannelModel.updateChannel(request, response)
+                .then(()=>{
+                    errors.edit = ['Your channel has been updated'];
+                })
+                .catch((error) => {
+                    errors.edit = [error];
+                });
+        } catch(errors) {
+            errors.edit = errors;
+        }
+        try{
+            await this.fetchChannelData(request, response, next);
+        } catch(errors) {
+            response.locals.errors.channels = errors;
+        }
+        response.render('channel-edit');
     };
 
     deleteChannel = async (request, response, next) => {
@@ -117,10 +139,29 @@ class ChannelController{
         if (!request.session.token) {
             response.redirect('/');
         }
-        var channelId = request.params.channelId;
-        if (AraDTValidator.isEmpty(request.body.name)) {
-            request.session.errors.editChannelErrors = ['You need to specifcy a name'];
-            response.redirect('/channels/edit/' + channelId);
+        
+        if (!channelId) {
+            errors.general = ['You need to specify a channel to delete'];
+            response.redirect('/channels');
+        }
+    }
+
+    fetchChannelData = async (request, response, next) => {
+        try{
+            var subscribed = await AraDTChannelModel.getSubscribedChannels();
+            var owned = await AraDTChannelModel.getOwnedChannels();
+            response.locals.channels.owned = owned;
+            response.locals.channels.subscribed = subscribed;
+            var channelId = request.params.channelId;
+            if (channelId) {
+                var editChannel = await AraDTChannelModel.editChannel(channelId);
+                response.locals.channels.editChannel = editChannel.editChannel;
+                response.locals.channels.inUsers = editChannel.inUsers;
+                response.locals.channels.outUsers = editChannel.outUsers;
+            }
+            return;
+        } catch(error) {
+            throw Error(error);
         }
     }
 

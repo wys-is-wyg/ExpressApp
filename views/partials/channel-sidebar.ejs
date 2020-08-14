@@ -1,14 +1,15 @@
 <% 
-var ownedChannels = ("ownedChannels" in  locals) ? locals.ownedChannels : false
-var subscribedChannels = ("subscribedChannels" in  locals) ? locals.subscribedChannels : false
+var channels = locals.channels
+var owned = ("owned" in  channels) ? channels.owned : false
+var subscribed = ("subscribed" in  channels) ? channels.subscribed : false
 %>
             <div id="owned-channels" class="user-channels">
-                <% if (ownedChannels) { %>
+                <% if (owned) { %>
                     <ul class="list-group">
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             <h4>Your Channels <i class="fas fas fa-user float-right"></i></h4>
                         </li>
-                    <% ownedChannels.forEach(function(channel) { %>
+                    <% owned.forEach(function(channel) { %>
                         <li class="list-group-item channel-list-item d-flex justify-content-between align-items-center">
                             <div class="avatar-window">
                                 <img src="<%= channel.image %>" alt="<%= channel.name %>">
@@ -26,12 +27,12 @@ var subscribedChannels = ("subscribedChannels" in  locals) ? locals.subscribedCh
             </div>
             <p>&nbsp;</p>
             <div id="subscribed-channels" class="user-channels">
-                <% if (subscribedChannels) { %>
+                <% if (subscribed) { %>
                     <ul class="list-group">
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             <h4>Subscribed Channels <i class="fas fas fa-user float-right"></i></h4>
                         </li>
-                    <% subscribedChannels.forEach(function(channel) { %>
+                    <% subscribed.forEach(function(channel) { %>
                         <li class="list-group-item channel-list-item d-flex justify-content-between align-items-center">
                             <div class="avatar-window">
                                 <img src="<%= channel.image %>" alt="<%= channel.name %>">

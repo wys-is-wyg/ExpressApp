@@ -1,8 +1,10 @@
 <%- include('partials/header'); %> 
 <% 
-var users = locals.users
-var addChannelErrors = ("addChannel" in  locals.errors) ? locals.errors.addChannel : false
-var deleteChannelErrors = ("deleteChannel" in  locals.errors) ? locals.errors.deleteChannel : false 
+var users = locals.channels.users
+var channelErrors = locals.errors.channels
+var generalErrors = ("general" in  channelErrors) ? channelErrors.general : false
+var addErrors = ("add" in  channelErrors) ? channelErrors.add : false
+var deleteErrors = ("delete" in  channelErrors) ? channelErrors.delete : false 
 %>
 			<div id="main">
 				<div class="container-fluid">
@@ -13,8 +15,13 @@ var deleteChannelErrors = ("deleteChannel" in  locals.errors) ? locals.errors.de
 						<main role="main" class="col-md-8 col-sm-6">
 							<h2>Add A New Channel</h2>
 							<hr>
-							<% if (addChannelErrors) { %>
-								<% addChannelErrors.forEach(function(error) { %>
+							<% if (generalErrors) { %>
+								<% generalErrors.forEach(function(error) { %>
+									<p><div class="alert alert-primary" role="alert"><%= error %></div></p>
+								<% }) %>
+							<% } %>
+							<% if (addErrors) { %>
+								<% addErrors.forEach(function(error) { %>
 									<p><div class="alert alert-primary" role="alert"><%= error %></div></p>
 								<% }) %>
 							<% } %>

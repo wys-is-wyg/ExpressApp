@@ -4,44 +4,56 @@ class ChannelModel{
         return this;
     }
 
-    getChannelData(datum) {
-        return {
-            id: datum.id,
-            slug: datum.data().slug,
-            public: datum.data().public,
-            name: datum.data().name,
-            image: datum.data().image,
-            users: datum.data().users,
-            createdAt: datum.data().createdAt,
-        }
+    getChannelUsers = async () => {
+        var currentUser = await AraDTDatabase.firebase.auth().currentUser;
+        var users = [];
+        await AraDTDatabase.firebaseAdmin.auth().listUsers()
+            .then((data) => {
+                data.users.forEach((datum) => {
+                    if (datum.uid != currentUser.uid) {
+                        users.push({
+                            id: datum.uid,
+                            name: datum.displayName,
+                            image: datum.photoURL,
+                        });
+                    }
+                });
+                if (users.length == 0) {
+                    users = false;
+                }
+            })
+            .catch(function(error) {
+                throw new Error(['We were unable to find any users yet!']);
+            });
+
+        return users;
     }
 
     editChannel = async (channelId) => {
 
         var channelDoc = AraDTDatabase.storage.collection('channels').doc(channelId);
-        var channelToEdit = {};
+        var editChannel = {};
         await channelDoc.get()
             .then((datum) => {
-                channelToEdit = this.getChannelData(datum);
+                editChannel = this.getChannelData(datum);
             })
             .catch(() => {
-                request.session.errors.general = ['This channel does not exist'];
-                response.redirect('/channels');
+                throw new Error(['This channel does not exist']);
             });
-        var channelUsers = [];
-        var otherUsers = [];
+        var inUsers = [];
+        var outUsers = [];
         await AraDTDatabase.firebaseAdmin.auth().listUsers()
             .then((data) => {
                 data.users.forEach((datum) => {
-                    if (!AraDTValidator.isEmpty(channelToEdit.users) 
-                        && channelToEdit.users.includes(datum.uid)) {
-                        channelUsers.push({
+                    if (!AraDTValidator.isEmptyObj(editChannel.users) 
+                        && editChannel.users.includes(datum.uid)) {
+                        inUsers.push({
                             id: datum.uid,
                             name: datum.displayName,
                             image: datum.photoURL,
                         });
                     } else {
-                        otherUsers.push({
+                        outUsers.push({
                             id: datum.uid,
                             name: datum.displayName,
                             image: datum.photoURL,
@@ -54,26 +66,15 @@ class ChannelModel{
             });
 
         return{
-            channelToEdit,
-            channelUsers,
-            otherUsers
+            editChannel,
+            inUsers,
+            outUsers
         }
     }
 
     updateChannel = async (request, response) => {
 
         var channelId = request.params.channelId;
-        
-        if (!channelId) {
-            request.session.errors.general = ['You need to specifcy a channel to edit'];
-            response.redirect('/channels');
-        }
-
-        if (AraDTValidator.isEmpty(request.body.name)) {
-            request.session.errors.editChannelErrors = ['You need to specifcy a name'];
-            response.redirect('/channels/edit/' + channelId);
-        }
-
         var currentUser = await AraDTDatabase.firebase.auth().currentUser;
         var slugName = AraDTValidator.makeSlug(request.body.name);
         var image = '';
@@ -86,8 +87,7 @@ class ChannelModel{
             if (validExtension) {
                 image = result;
             } else {
-                request.session.errors.editChannelErrors = [result];
-                response.redirect('/channels/edit/' + channelId);
+                throw Error(result);
             }
         } else {
             image = request.body['current-avatar'];
@@ -123,8 +123,7 @@ class ChannelModel{
             if (validExtension) {
                 image = result;
             } else {
-                request.session.errors.addChannel = [result];
-                response.redirect('/channels');
+                throw Error(result.result);
             }
         }
 
@@ -143,37 +142,6 @@ class ChannelModel{
             .catch((error) => {
                 throw Error(error);
             });
-    }
-
-    getUserChannels = async () => {
-        var currentUser = await AraDTDatabase.firebase.auth().currentUser;
-        var users = [];
-        var subscribedChannels = await this.getSubscribedChannels(currentUser.uid);
-        var ownedChannels = await this.getOwnedChannels(currentUser.uid);
-        await AraDTDatabase.firebaseAdmin.auth().listUsers()
-            .then((data) => {
-                data.users.forEach((datum) => {
-                    if (datum.uid != currentUser.uid) {
-                        users.push({
-                            id: datum.uid,
-                            name: datum.displayName,
-                            image: datum.photoURL,
-                        });
-                    }
-                });
-                if (users.length == 0) {
-                    users = false;
-                }
-            })
-            .catch(function(error) {
-                console.log('Error fetching user data:', error);
-            });
-
-        return{
-            users,
-            subscribedChannels,
-            ownedChannels
-        }
     }
 
     getSubscribedChannels = async () => {
@@ -244,6 +212,18 @@ class ChannelModel{
                 console.log('Error fetching channel data:' + error.message);
             });
         return channels;
+    }
+
+    getChannelData(datum) {
+        return {
+            id: datum.id,
+            slug: datum.data().slug,
+            public: datum.data().public,
+            name: datum.data().name,
+            image: datum.data().image,
+            users: datum.data().users,
+            createdAt: datum.data().createdAt,
+        }
     }
 }
 module.exports = ChannelModel;
