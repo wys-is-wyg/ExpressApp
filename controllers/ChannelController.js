@@ -121,6 +121,8 @@ class ChannelController{
             await this.fetchChannelData(request, response, next);
             await this.fetchEditChannelData(request, response, next);
         } catch(error) {
+            console.log('124');
+            console.log(error.message);
             errors.general = [error.message];
             response.redirect('/channels');
         }
@@ -223,6 +225,8 @@ class ChannelController{
             channelData.owned       = await AraDTChannelModel.getOwnedChannels();
             return;
         } catch(error) {
+            console.log('226');
+            console.log(error);
             throw error;
         }
     }
@@ -242,6 +246,8 @@ class ChannelController{
             }
             return;
         } catch(error) {
+            console.log('247');
+            console.log(error);
             throw error;
         }
     }

@@ -307,7 +307,7 @@ class UserModel{
      * 
      * @returns {Array}    array of all registered users
      */
-    getUsers = async(currentUserId = False) => {
+    getUsers = async(currentUserId = false) => {
         var users = [];
         await AraDTDatabase.firebaseAdmin.auth().listUsers()
             .then((data) => {
