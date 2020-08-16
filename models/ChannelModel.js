@@ -4,41 +4,20 @@ class ChannelModel{
         return this;
     }
 
-    getChannelUsers = async () => {
-        var currentUser = await AraDTDatabase.firebase.auth().currentUser;
-        var users = [];
-        await AraDTDatabase.firebaseAdmin.auth().listUsers()
-            .then((data) => {
-                data.users.forEach((datum) => {
-                    if (datum.uid != currentUser.uid) {
-                        users.push({
-                            id: datum.uid,
-                            name: datum.displayName,
-                            image: datum.photoURL,
-                        });
-                    }
-                });
-                if (users.length == 0) {
-                    users = false;
-                }
-            })
-            .catch(function(error) {
-                throw new Error(['We were unable to find any users yet!']);
-            });
-
-        return users;
-    }
-
-    editChannel = async (channelId) => {
+    readChannel = async (channelId) => {
 
         var channelDoc = AraDTDatabase.storage.collection('channels').doc(channelId);
         var editChannel = {};
         await channelDoc.get()
             .then((datum) => {
-                editChannel = this.getChannelData(datum);
+                if (!datum.exists) {
+                    throw new Error(['This channel does not exist']);
+                } else {
+                    editChannel = this.getChannelData(datum);
+                }
             })
-            .catch(() => {
-                throw new Error(['This channel does not exist']);
+            .catch((error) => {
+                throw error;
             });
         var inUsers = [];
         var outUsers = [];
@@ -62,7 +41,7 @@ class ChannelModel{
                 });
             })
             .catch(function(error) {
-                console.log('Error fetching user data:', error);
+                throw new Error(error);
             });
 
         return{
@@ -97,7 +76,6 @@ class ChannelModel{
             owner: currentUser.uid,
             name: request.body.name,
             slug: slugName,
-            public: publicChannel,
             image: image,
             users: users
         }
@@ -114,7 +92,6 @@ class ChannelModel{
         var currentUser = await AraDTDatabase.firebase.auth().currentUser;
         var slugName = AraDTValidator.makeSlug(request.body.name);
         var image = '';
-        var publicChannel = (request.body.public) ? request.body.public : false;
         var avatar = (request.files && request.files.avatar) ? request.files.avatar : false;
         var users = (request.body.users) ? request.body.users : {};
         
@@ -131,7 +108,6 @@ class ChannelModel{
             owner: currentUser.uid,
             name: request.body.name,
             slug: slugName,
-            public: publicChannel,
             image: image,
             users: users,
             createdAt: new Date().toISOString()
@@ -192,7 +168,25 @@ class ChannelModel{
         return channels;
     }
 
-    getChannels = async () => {
+    deleteChannel = async(channelId) => {
+
+        var currentUser = await AraDTDatabase.firebase.auth().currentUser;
+        var channelDoc = AraDTDatabase.storage.collection('channels').doc(channelId);
+        await channelDoc.get()
+            .then((datum) => {
+                if (datum.data().owner == currentUser.uid) {
+                    channelDoc.delete();
+                    return ['This channel has been deleted'];
+                } else {
+                    throw new Error(['You do not have authorisation to delete this channel']);
+                }
+            })
+            .catch(() => {
+                throw new Error(['This channel does not exist']);
+            });
+    }
+
+    getAllChannels = async () => {
 
         var channels = [];
         await AraDTDatabase.storage.collection('channels')
@@ -218,7 +212,7 @@ class ChannelModel{
         return {
             id: datum.id,
             slug: datum.data().slug,
-            public: datum.data().public,
+            owner: datum.data().owner,
             name: datum.data().name,
             image: datum.data().image,
             users: datum.data().users,

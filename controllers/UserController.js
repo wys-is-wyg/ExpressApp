@@ -31,7 +31,7 @@ class UserController{
     
     //fetches all channels, and orders by number of users, then renders index.ejs
     signup = async (request, response) => {
-        var channels = await AraDTChannelModel.getChannels();
+        var channels = await AraDTChannelModel.getAllChannels();
         channels.sort((a, b) => (a.users.length < b.users.length) ? 1 : -1);
         response.locals.channels = channels;
         response.render('register');

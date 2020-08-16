@@ -54,7 +54,7 @@ class Router{
 
     //Fetches all channels and renders index page
     index = async (request, response, next) => {
-        var channels = await AraDTChannelModel.getChannels();
+        var channels = await AraDTChannelModel.getAllChannels();
         channels.sort((a, b) => (a.users.length < b.users.length) ? 1 : -1);
         response.locals.channels = channels;
         response.render('index');

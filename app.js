@@ -1,4 +1,5 @@
 // Add all required modules
+var http = require('http');
 var express = require('express');
 var session = require('express-session');
 var path = require('path');
@@ -12,11 +13,34 @@ var fileUpload = require('express-fileupload');
  */
 AraDTApp = express();
 AraDTApp.use(session({
-    secret: 'hurrdurr',
+    secret: 'hodor',
     resave: false,
     saveUninitialized: true,
     cookie: { secure: false }
 }));
+
+AraDTApp.use('/socket', express.static('./node_modules/socket.io-client/dist'));
+
+AraDTServer = http.createServer(AraDTApp);
+AraDTIO = require('socket.io').listen(AraDTServer);
+AraDTServer.listen(80);
+
+AraDTIO.on('connection', function (socket) {
+    console.log("Connected succesfully to the socket ...");
+
+    var news = [
+        { title: 'The cure of the Sadness is to play Videogames',date:'04.10.2016'},
+        { title: 'Batman saves Racoon City, the Joker is infected once again',date:'05.10.2016'},
+        { title: "Deadpool doesn't want to do a third part of the franchise",date:'05.10.2016'},
+        { title: 'Quicksilver demand Warner Bros. due to plagiarism with Speedy Gonzales',date:'04.10.2016'},
+    ];
+
+    // Send news on the socket
+    socket.emit('news', news);
+    socket.on('my other event', function (data) {
+        console.log(data);
+    });
+});
 
 // Assign view directory and EJS template language
 AraDTApp.set('views', path.join(__dirname, 'views'));

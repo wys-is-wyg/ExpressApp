@@ -299,22 +299,36 @@ class UserModel{
 
     };
 
-    getUsers = async() => {
+    
+    /**
+     * Gets all users from Firebase
+     * 
+     * @param {String}     currentUserId        Option to exclude user from returned list
+     * 
+     * @returns {Array}    array of all registered users
+     */
+    getUsers = async(currentUserId = False) => {
         var users = [];
         await AraDTDatabase.firebaseAdmin.auth().listUsers()
             .then((data) => {
+                // Add users to the array
                 data.users.forEach((datum) => {
-                    users.push({
-                        id: datum.uid,
-                        name: datum.displayName,
-                        image: datum.photoURL,
-                    });
+                    //Exclude current user if passed to getUsers request
+                    if (!currentUserId ||
+                        datum.uid != currentUserId) {
+                            users.push({
+                                id: datum.uid,
+                                name: datum.displayName,
+                                image: datum.photoURL,
+                            });
+                    }
                 });
                 if (users.length == 0) {
                     users = false;
                 }
             })
             .catch(function(error) {
+                //Do not throw error, just log the issue
                 console.log('Error fetching user data:', error);
             });
         return users;

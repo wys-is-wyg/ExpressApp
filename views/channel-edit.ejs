@@ -1,8 +1,8 @@
 <%- include('partials/header'); %> 
 <% 
-var inUsers = locals.channels.inUsers
-var outUsers = locals.channels.outUsers
-var editChannel = locals.channels.editChannel
+var inUsers = locals.channels.editChannel.inUsers
+var outUsers = locals.channels.editChannel.outUsers
+var editChannel = locals.channels.editChannel.editChannel
 var editErrors = ("edit" in  locals.errors.channels) ? locals.errors.channels.edit : false 
 %>
 			<div id="main">

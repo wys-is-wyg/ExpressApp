@@ -14,7 +14,7 @@ var subscribed = ("subscribed" in  channels) ? channels.subscribed : false
                             <div class="avatar-window">
                                 <img src="<%= channel.image %>" alt="<%= channel.name %>">
                             </div>
-                            <a href="/channel/<%= channel.slug %>/"><%= channel.name %></a>
+                            <a href="/channel/<%= channel.id %>/"><%= channel.name %></a>
                             <a href="/channels/edit/<%= channel.id %>/"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
                             <a href="/channels/delete/<%= channel.id %>/"><i class="fa fa-trash" aria-hidden="true"></i></a>
                             <span class="badge badge-primary badge-pill" data-placement="top" title="<%= channel.users.length %> users..."><%= channel.users.length %></span>
