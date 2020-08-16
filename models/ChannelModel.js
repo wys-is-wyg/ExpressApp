@@ -84,10 +84,6 @@ class ChannelModel{
             });
 
         //return all user data
-        console.log('in')
-        console.log(inUsers)
-        console.log('out')
-        console.log(outUsers)
         return{
             editChannel,
             inUsers,

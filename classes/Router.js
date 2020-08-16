@@ -24,12 +24,22 @@ class Router{
      * to local values
      */
     setVariables(){
-        AraDTApp.use(function(request, response, next) {
+        AraDTApp.use(async (request, response, next) => {
             if (request.session.errors) {
                 response.locals.errors = request.session.errors;
             }
             request.session.errors = {};
             request.session.errors.general = [];
+
+            /*
+                if (request.session.token) {
+                    response.locals.channels    = {};
+                    var channelData             = response.locals.channels;
+                    channelData.subscribed      = await AraDTChannelModel.getSubscribedChannels();
+                    channelData.owned           = await AraDTChannelModel.getOwnedChannels();
+                }
+            */
+           
             next();
         });
     }

@@ -22,7 +22,7 @@ class ChannelController{
      * Transfer variables from sessions to locals.
      */
     setVariables(){
-        AraDTApp.use(async function(request, response, next) {
+        AraDTApp.use(async (request, response, next) => {
             response.locals.channels = {};
             if (!response.locals.errors){
                 response.locals.errors = {};
@@ -50,11 +50,6 @@ class ChannelController{
         
         if (!request.session.token) {
            response.redirect('/');
-        }
-        try{
-            await this.fetchChannelData(request, response, next);
-        } catch(error) {
-            response.locals.errors.channels.general = [error.message];
         }
         response.render('channels');
     };
@@ -121,8 +116,6 @@ class ChannelController{
             await this.fetchChannelData(request, response, next);
             await this.fetchEditChannelData(request, response, next);
         } catch(error) {
-            console.log('124');
-            console.log(error.message);
             errors.general = [error.message];
             response.redirect('/channels');
         }
@@ -225,8 +218,6 @@ class ChannelController{
             channelData.owned       = await AraDTChannelModel.getOwnedChannels();
             return;
         } catch(error) {
-            console.log('226');
-            console.log(error);
             throw error;
         }
     }
@@ -246,8 +237,6 @@ class ChannelController{
             }
             return;
         } catch(error) {
-            console.log('247');
-            console.log(error);
             throw error;
         }
     }
