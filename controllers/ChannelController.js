@@ -11,9 +11,9 @@ class ChannelController{
     constructor(){
         this.setVariables();
         AraDTApp.get('/channels', this.fetchChannels);
+        AraDTApp.get('/channel/:channelId', this.showChannel);
         AraDTApp.post('/channels/add', this.addChannel);
         AraDTApp.get('/channels/delete/:channelId', this.deleteChannel);
-        AraDTApp.get('/channel/:channelId', this.showChannel);
         AraDTApp.get('/channels/edit/:channelId', this.readChannel);
         AraDTApp.post('/channels/edit/:channelId', this.updateChannel);
     }
