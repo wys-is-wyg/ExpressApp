@@ -52,12 +52,13 @@ class ChannelController{
            response.redirect('/');
         }
         
+        var errors = request.session.errors.channels;
+
         try{
             await this.fetchChannelData(request, response, next);
             await this.fetchEditChannelData(request, response, next);
         } catch(error) {
             errors.general = [error.message];
-            response.redirect('/channels');
         }
 
         response.render('channels');
